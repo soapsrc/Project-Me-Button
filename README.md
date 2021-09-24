@@ -8,5 +8,5 @@ Sophia Le, Daniel Tiu, Marela Carlos
 * Develop your code on a branch
 * Create a pull request and have at least one person code review it before merging to main
 
-# Branch Naming Convention
+### Branch Naming Convention
 collaboratorname/task
