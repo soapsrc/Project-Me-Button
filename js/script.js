@@ -9,8 +9,8 @@ var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
 // Tomato boolean
-var showTomato = false;
-var tomatoLanded = false;
+var showItem = false;
+var itemLanded = false;
 
 // Declare variables
 var speed = 0.7; // FrameRate - lower is faster
@@ -26,8 +26,8 @@ var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
 var delay = 17; // Animation delay for Walking Kirby and Chef Kirby animation
 var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
-var tomatoX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
-var tomatoY = 200 + (ckirby.height); // Y coordinate of tomato
+var itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+var itemY = 200 + (ckirby.height); // Y coordinate of tomato
 
 function init() {
     // Load images
@@ -80,7 +80,7 @@ function draw() {
 
     drawKirby();
 
-    if (tomatoLanded) drawTomato();
+    if (itemLanded) drawItem("tomato");
 }
 
 function drawKirby() {
@@ -98,14 +98,16 @@ function drawKirby() {
 
 }
 
-function drawTomato() {
-    ctx.drawImage(tomato, tomatoX, tomatoY);
-    tomatoX += dx
-    if (tomatoX < -tomato.width) {
-        showTomato = false;
-        tomatoLanded = false;
-        tomatoX = (canvas.width / 2) + ckirby.width;
-        tomatoY = 200 + (ckirby.height);
+function drawItem(type) {
+    if (type == "tomato")
+        ctx.drawImage(tomato, itemX, itemY);
+    else if (type == "fireKirby") {} // draw Fire Kirby
+    itemX += dx
+    if (itemX < -tomato.width) {
+        showItem = false;
+        itemLanded = false;
+        itemX = (canvas.width / 2) + ckirby.width;
+        itemY = 200 + (ckirby.height);
     }
 
 }
@@ -119,34 +121,36 @@ function scaleToFit(img) {
     ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
 }
 
-function drawItem(time) {
+function landItem(time, type) {
     if (!startTime) // it's the first frame
         startTime = time || performance.now();
 
     // deltaTime should be in the range [0 ~ 1]
     var deltaTime = (time - startTime) / duration;
     // currentPos = previous position + (difference * deltaTime)
-    var currentX = tomatoX + ((canvas.width - 50 - tomatoX) * deltaTime);
-    var currentY = tomatoY + ((335 - tomatoY) * deltaTime);
+    var currentX = itemX + ((canvas.width - 50 - itemX) * deltaTime);
+    var currentY = itemY + ((335 - itemY) * deltaTime);
 
     if (deltaTime >= 1) { // this means we ended our animation
-        tomatoX = canvas.width - 50; // reset x variable
-        tomatoY = 335; // reset y variable
+        itemX = canvas.width - 50; // reset x variable
+        itemY = 335; // reset y variable
         startTime = null; // reset startTime
-        ctx.drawImage(tomato, tomatoX, tomatoY);
-        tomatoLanded = true;
+        if (type == "tomato")
+            ctx.drawImage(tomato, itemX, itemY);
+        else if (type == "fireKirby") {} // draw fire Kirby sprite
+        itemLanded = true;
     } else {
         ctx.drawImage(tomato, currentX, currentY);
-        requestAnimationFrame(drawItem); // do it again
+        requestAnimationFrame(landItem); // do it again
     }
 }
 
 function onClick(e) {
     if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
-        if (!showTomato) {
-            showTomato = true;
-            drawItem();
+        if (!showItem) {
+            showItem = true;
+            landItem(performance.now(), "tomato");
         }
     }
 
