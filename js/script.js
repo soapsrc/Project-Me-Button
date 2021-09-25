@@ -8,41 +8,53 @@ var wkirby = new Image();
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
-// Load images
-bg.src = "assets/kirbydreamland.jpeg";
-pf.src = "assets/grasstile.png"
-wkirby.src = "assets/walkkirby/wkirby0.gif"
-tomato.src = "assets/tomato.png"
-ckirby.src = "assets/chefkirby/ckirby0.gif"
-    // Declare variables
-var speed = 0.7; // lower is faster
-var scale = 1.05;
-var dx = -0.75;
-var ctx;
+// Tomato boolean
+var showTomato = false;
+var tomatoLanded = false;
+
+// Declare variables
+var speed = 0.7; // FrameRate - lower is faster
+var scale = 1.05; // Scale of the platform image
+var dx = -0.75; // Offset of pfX
+var ctx; // Canvas context
 canvas.width = 800;
 canvas.height = 451;
-var x = 0;
-var y = canvas.height - 90;
-var frame = 1;
-var f = 1;
-var delay = 17;
+var pfX = 0; // X coordinate of scrolling platform
+var pfY = canvas.height - 90; // Y coordiante of scrolling platform
+var delayCount = 1; // Delay count of Walking Kirby and Chef Kirby
+var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
+var delay = 17; // Animation delay for Walking Kirby and Chef Kirby animation
+var duration = 1500; // Duration of chef -> platform item animation
+var startTime; // Start time of chef -> platform item animation
+var tomatoX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+var tomatoY = 200 + (ckirby.height); // Y coordinate of tomato
 
 function init() {
-    // get canvas context
-    ctx = document.getElementById('canvas').getContext('2d');
-    document.getElementById('canvas').addEventListener("click", onClick, false);
+    // Load images
+    bg.src = "assets/kirbydreamland.jpeg";
+    pf.src = "assets/grasstile.png"
+    wkirby.src = "assets/walkkirby/wkirby0.gif"
+    tomato.src = "assets/mtomato.png"
+    ckirby.src = "assets/chefkirby/ckirby0.gif"
 
+    // Get canvas context and add double click event listener
+    ctx = document.getElementById('canvas').getContext('2d');
+    document.getElementById('canvas').addEventListener("dblclick", onClick, false);
+
+    // Load background image
     bg.onload = function() {
         scaleToFit(this);
     }
 
+    // Load scrolling platform
     pf.onload = function() {
-        imgW = pf.width * scale;
-        imgH = pf.height * scale;
+            imgW = pf.width * scale;
+            imgH = pf.height * scale;
 
-        // set refresh rate
-        return setInterval(draw, speed);
-    }
+            // Set refresh rate
+            return setInterval(draw, speed);
+        }
+        // 
     wkirby.onload = function() {
         drawKirby();
     }
@@ -54,39 +66,47 @@ function draw() {
     scaleToFit(bg);
 
     // reset, start from beginning
-    if (x < -imgW) {
-        x = 0;
+    if (pfX < -imgW) {
+        pfX = 0;
     }
     // draw additional image
-    if (x < canvas.width - imgW) {
-        ctx.drawImage(pf, x + imgW, y, imgW, imgH);
+    if (pfX < canvas.width - imgW) {
+        ctx.drawImage(pf, pfX + imgW, pfY, imgW, imgH);
     }
     // draw image
-    ctx.drawImage(pf, x, y, imgW, imgH);
+    ctx.drawImage(pf, pfX, pfY, imgW, imgH);
     // amount to move
-    x += dx;
+    pfX += dx;
 
     drawKirby();
 
-    ctx.beginPath();
-    ctx.lineWidth = "4";
-    ctx.strokeStyle = "red";
-    ctx.rect(canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
-    ctx.stroke();
+    if (tomatoLanded) drawTomato();
 }
 
 function drawKirby() {
     ctx.drawImage(wkirby, -50, 190, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
-    if (frame % delay == 0) {
+    if (delayCount % delay == 0) {
         wkirby.src = "assets/walkkirby/wkirby" + f + ".gif";
         ckirby.src = "assets/chefkirby/ckirby" + f + ".gif";
         f++;
     }
 
-    if (frame < delay * 16) frame++;
-    else frame = 1;
+    if (delayCount < delay * 16) delayCount++;
+    else delayCount = 1;
     if (f > 15) f = 0;
+
+}
+
+function drawTomato() {
+    ctx.drawImage(tomato, tomatoX, tomatoY);
+    tomatoX += dx
+    if (tomatoX < -tomato.width) {
+        showTomato = false;
+        tomatoLanded = false;
+        tomatoX = (canvas.width / 2) + ckirby.width;
+        tomatoY = 200 + (ckirby.height);
+    }
 
 }
 
@@ -99,16 +119,37 @@ function scaleToFit(img) {
     ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
 }
 
-function animate() {
+function drawItem(time) {
+    if (!startTime) // it's the first frame
+        startTime = time || performance.now();
 
+    // deltaTime should be in the range [0 ~ 1]
+    var deltaTime = (time - startTime) / duration;
+    // currentPos = previous position + (difference * deltaTime)
+    var currentX = tomatoX + ((canvas.width - 50 - tomatoX) * deltaTime);
+    var currentY = tomatoY + ((335 - tomatoY) * deltaTime);
+
+    if (deltaTime >= 1) { // this means we ended our animation
+        tomatoX = canvas.width - 50; // reset x variable
+        tomatoY = 335; // reset y variable
+        startTime = null; // reset startTime
+        ctx.drawImage(tomato, tomatoX, tomatoY);
+        tomatoLanded = true;
+    } else {
+        ctx.drawImage(tomato, currentX, currentY);
+        requestAnimationFrame(drawItem); // do it again
+    }
 }
 
 function onClick(e) {
-
     if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
-        animate();
+        if (!showTomato) {
+            showTomato = true;
+            drawItem();
+        }
     }
+
 }
 
 init();
