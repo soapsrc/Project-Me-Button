@@ -52,7 +52,6 @@ function init() {
     // Load images
     bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png"
-
     wkirby.src = "assets/kirby_animation_frames/Kirby_Walk/0.png"
     tomato.src = "assets/mtomato.png"
     ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif"
@@ -65,6 +64,7 @@ function init() {
     // Load background image
     bg.onload = function() {
         scaleToFit(this);
+
     }
 
     // Load scrolling platform
@@ -196,6 +196,9 @@ function notCollided() {
         console.log("isSuck = true");
         isSuck = true;
         loadArray("suck");
+        // Play suck sound effect
+        suckSound = new loadSound("assets/audio/kirbysuck.mp3");
+        suckSound.play();
         // Mirror is updated with new meme
         updateMirror();
     }
@@ -258,6 +261,16 @@ function onClick(e) {
         }
     }
 
+}
+
+function loadSound(path) {
+    var audio = new Audio(path);
+    this.play = function() {
+        audio.play();
+    }
+    this.stop = function() {
+        audio.pause();
+    }
 }
 
 init();
