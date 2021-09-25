@@ -170,7 +170,7 @@ function drawMirror() {
  */
 function drawKirby() {
     // Draw walking Kirby and chef Kirby
-    ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
+    ctx.drawImage(wkirby, 20, 361 - (wkirby.height * 3.5), wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     // Must delay Kirbys animation or else it will be too fast
     if (delayCount % delay == 0) { // Only animate Kirbys when delayCount % delay == 0
@@ -187,7 +187,6 @@ function drawKirby() {
         if (isSuck) {
             console.log("isSuck = false");
             //loadArray("fire");
-            console.log("189 kirbyFileUtility() "+kirbyFileUtility());
             loadArray(kirbyFileUtility()+walkSuffix);
 
             isSuck = false;
@@ -232,6 +231,7 @@ function loadArray(kirby) {
         wKirbyFrame = 0;
     }
 }
+
 /**
  * Returns None
  * Resets current item position back to beside chef's Kirby pot
@@ -271,6 +271,7 @@ function drawItem() {
     ctx.drawImage(itemType, itemX, itemY);
     itemX += dx
 }
+
 /**
  * Returns None
  * Moves item from chef Kirby's pot to the end of the scrolling Kirby platform
@@ -358,6 +359,7 @@ function releaseItem(releaseItemType, e) {
         }
     }
 }
+
 /**
  * Returns None
  * Parameters: path - relative path of mp3 file
