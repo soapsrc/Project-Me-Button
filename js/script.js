@@ -183,7 +183,7 @@ function drawKirby() {
     else delayCount = 1;
     // Last animation frame
     if (wKirbyFrame > walkArray.length - 1) {
-        // If Kirby is already sucking, default normal_kirby_walk sprites is saved into walkArray
+        // If Kirby is already sucking, default normal_kirby_walk sprites saved into walkArray
         if (isSuck) {
             console.log("isSuck = false");
             //loadArray("fire");
