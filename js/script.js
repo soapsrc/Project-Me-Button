@@ -96,6 +96,12 @@ function drawKirby() {
 function drawTomato() {
     ctx.drawImage(tomato, tomatoX, tomatoY);
     tomatoX += dx
+    if (tomatoX < 0) {
+        showTomato = false;
+        tomatoX = (canvas.width / 2) + ckirby.width;
+        tomatoY = 200 + (ckirby.height);
+    }
+
 }
 
 function scaleToFit(img) {
@@ -132,7 +138,8 @@ function drawItem(time) {
 function onClick(e) {
     if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
-        drawItem();
+        if (!showTomato)
+            drawItem();
     }
 
 }
