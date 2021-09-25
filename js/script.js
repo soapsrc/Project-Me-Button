@@ -7,7 +7,12 @@ var wkirby = new Image();
 var walkArray = new Array();
 // Meme tomato
 var tomato = new Image();
-var fireKirby = new Image();
+// Copy Items
+var fireItem = new Image();
+var iceItem = new Image();
+var mirrorItem = new Image();
+var painterItem = new Image();
+var swordItem = new Image();
 // Chef Kirby
 var ckirby = new Image();
 // Item display boolean
@@ -57,7 +62,11 @@ function init() {
     wkirby.src = "assets/kirby_animation_frames/Kirby_Walk/0.png";
     tomato.src = "assets/mtomato.png";
     ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif";
-    fireKirby.src = "assets/Kirby_Animation_Frames/copy_abilities/1.png";
+    fireItem.src = "assets/Kirby_Animation_Frames/copy_abilities/1.png";
+    iceItem.src = "assets/Kirby_Animation_Frames/copy_abilities/0.png";
+    mirrorItem.src = "assets/Kirby_Animation_Frames/copy_abilities/2.png";
+    painterItem.src = "assets/Kirby_Animation_Frames/copy_abilities/4.png";
+    swordItem.src = "assets/Kirby_Animation_Frames/copy_abilities/3.png";
     loadArray("default");
 
     // Get canvas context and add double click event listener
@@ -211,12 +220,7 @@ function notCollided() {
 }
 // Draws item as it moves along the platform and towards Kirby
 function drawItem() {
-    if (itemType == "tomato")
-        ctx.drawImage(tomato, itemX, itemY);
-    else if (itemType == "fireKirby") {
-        ctx.drawImage(fireKirby, itemX, itemY);
-    } // draw Fire Kirby
-
+    ctx.drawImage(itemType, itemX, itemY);
     itemX += dx
 }
 
@@ -235,18 +239,11 @@ function landItem(time) {
         itemX = canvas.width - 50; // reset x variable
         itemY = 335; // reset y variable
         startTime = null; // reset startTime
-        if (itemType == "tomato")
-            ctx.drawImage(tomato, itemX, itemY);
-        else if (itemType == "fireKirby") {
-            ctx.drawImage(fireKirby, itemX, itemY);
-        } // draw fire Kirby sprite
+        ctx.drawImage(itemType, itemX, itemY);
         itemLanded = true;
     } else {
-        if (itemType == "tomato")
-            ctx.drawImage(tomato, currentX, currentY);
-        else if (itemType == "fireKirby") {
-            ctx.drawImage(fireKirby, currentX, currentY);
-        } // draw fire Kirby sprite
+        ctx.drawImage(itemType, currentX, currentY);
+
         requestAnimationFrame(landItem); // Continue with animation
     }
 }
@@ -266,14 +263,14 @@ let clickTimer
 function onSingleClick(e){
     if (e.detail === 1) {
         clickTimer = setTimeout(() => {
-            releaseItem('fireKirby', e);
+            releaseItem(fireItem, e);
         }, 200)
     }
 }
 
 function onDoubleClick(e) {
     clearTimeout(clickTimer)
-    releaseItem('tomato', e);
+    releaseItem(tomato, e);
 }
 
 function releaseItem(releaseItemType, e) {
