@@ -11,10 +11,13 @@ var tomato = new Image();
 var ckirby = new Image();
 // Item display boolean
 var showItem = false;
-// Item has landed on glass platform boolean
+// Item has landed on grass platform boolean
 var itemLanded = false;
 // Kirby is inhaling something boolean
 var isSuck = false;
+// Item type variable (tomato, sword, fire, ice, etc.)
+var itemType;
+
 // Declare variables
 var speed = 0.7; // FrameRate - lower is faster
 var scale = 1.05; // Scale of the platform image
@@ -25,13 +28,16 @@ canvas.height = 451;
 var pfX = 0; // X coordinate of scrolling platform
 var pfY = canvas.height - 90; // Y coordiante of scrolling platform
 var delayCount = 1; // Delay count of Walking Kirby and Chef Kirby
-var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
+var wKirbyFrame = 1; // Current frame of Walking Kirby and Chef Kerby animation
 var delay = 20; // Animation delay for Walking Kirby and Chef Kirby animation
 var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
 var itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
 var itemY = 200 + (ckirby.height); // Y coordinate of tomato
-
+/**
+ * This function is used to import other files
+ * @param {*} file, this parameter is the relative filepath to another file 
+ */
 function include(file) {
     var script = document.createElement('script');
     script.src = file;
@@ -40,17 +46,16 @@ function include(file) {
 
     document.getElementsByTagName('head').item(0).appendChild(script);
 }
-
+// Import rss.js
 include('js/rss.js');
 
 function init() {
     // Load images
     bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png"
-
-    wkirby.src = "assets/kirby_Animation_Frames/Kirby_Walk/0.png"
+    wkirby.src = "assets/kirby_animation_frames/Kirby_Walk/0.png"
     tomato.src = "assets/mtomato.png"
-    ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
+    ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif"
     loadArray("default");
 
     // Get canvas context and add double click event listener
@@ -60,19 +65,19 @@ function init() {
     // Load background image
     bg.onload = function() {
         scaleToFit(this);
+
     }
 
     // Load scrolling platform
     pf.onload = function() {
-            imgW = pf.width * scale;
-            imgH = pf.height * scale;
 
-            // Set refresh rate
-            return setInterval(draw, speed);
-        }
-        // 
+        // Set refresh rate
+        return setInterval(draw, speed);
+    }
+
+    // Draw kirby on load
     wkirby.onload = function() {
-        
+
         drawKirby();
     }
 }
@@ -80,25 +85,44 @@ function init() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
     scaleToFit(bg);
+    // Draw scrolling platform
+    drawPlatform();
+    // Draw meme mirror
+    drawMirror();
+    // Check if collided with item
+    notCollided();
+    // Check if item landed on grass platform
+    if (itemLanded) drawItem(itemType);
+    drawKirby();
+}
 
+function scaleToFit(img) {
+    // get the scale
+    var scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+    // get the top left position of the image
+    var x = (canvas.width / 2) - (img.width / 2) * scale;
+    var y = (canvas.height / 2) - (img.height / 2) * scale;
+    ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
+}
+
+function drawPlatform() {
     // reset, start from beginning
-    if (pfX < -imgW) {
+    if (pfX < -pf.width) {
         pfX = 0;
     }
     // draw additional image
-    if (pfX < canvas.width - imgW) {
-        ctx.drawImage(pf, pfX + imgW, pfY, imgW, imgH);
+    if (pfX < canvas.width - pf.width) {
+        ctx.drawImage(pf, pfX + pf.width, pfY, pf.width, pf.height);
     }
     // draw image
-    ctx.drawImage(pf, pfX, pfY, imgW, imgH);
+    ctx.drawImage(pf, pfX, pfY, pf.width, pf.height);
     // amount to move
     pfX += dx;
+}
 
-    notCollided();
-
-
-    if (itemLanded) drawItem("tomato");
-    drawKirby();
+function drawMirror() {
+    // Initialize currentmeme to the Meme Mirror
+    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
 }
 
 /**
@@ -107,76 +131,62 @@ function draw() {
  * and the meme mirror.
  */
 function drawKirby() {
-    // Initialize currentmeme to the Meme Mirror
-    var currentmeme = memearray[0];
-
-    // If we need to change the meme image, make sure to change
-    // to a new meme image and not the default mirror
-    // TODO uncomment when variable that signals meme change is finalized
-    // if (memevariable) {
-    // var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
-    // while (currentmeme === newrandommeme && newrandommeme === meme0){
-    //     newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
-    // }
-    // currentmeme = newrandommeme;
-    // }
-    // 
-    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    // Draw walking Kirby and chef Kirby
     ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
-        wkirby.src = walkArray[f];
-        ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + f + ".gif";
-        f++;
+        wkirby.src = walkArray[wKirbyFrame];
+        ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby" + wKirbyFrame + ".gif";
+        wKirbyFrame++;
     }
 
     if (delayCount < delay * walkArray.length) delayCount++;
     else delayCount = 1;
     // Last animation frame
-    if (f > walkArray.length - 1) {
+    if (wKirbyFrame > walkArray.length - 1) {
         if (isSuck) {
             console.log("isSuck = false");
 
             loadArray("default");
             isSuck = false;
-            console.log("f1: " + f);
+            itemY += 5;
         }
-        f = 0;
+        wKirbyFrame = 0;
     }
 
 }
-
+// Manually loads images into an image array
 function loadArray(kirby) {
     if (kirby == "default") {
         console.log("load default");
-        walkArray[0] = "assets/Kirby_Animation_Frames/Kirby_Walk/0.png";
-        walkArray[1] = "assets/Kirby_Animation_Frames/Kirby_Walk/1.png";
-        walkArray[2] = "assets/Kirby_Animation_Frames/Kirby_Walk/2.png";
-        walkArray[3] = "assets/Kirby_Animation_Frames/Kirby_Walk/3.png";
-        walkArray[4] = "assets/Kirby_Animation_Frames/Kirby_Walk/4.png";
-        walkArray[5] = "assets/Kirby_Animation_Frames/Kirby_Walk/5.png";
-        walkArray[6] = "assets/Kirby_Animation_Frames/Kirby_Walk/6.png";
-        walkArray[7] = "assets/Kirby_Animation_Frames/Kirby_Walk/7.png";
-        walkArray[8] = "assets/Kirby_Animation_Frames/Kirby_Walk/8.png";
-        walkArray[9] = "assets/Kirby_Animation_Frames/Kirby_Walk/9.png";
+        walkArray[0] = "assets/kirby_animation_frames/Kirby_Walk/0.png";
+        walkArray[1] = "assets/kirby_animation_frames/Kirby_Walk/1.png";
+        walkArray[2] = "assets/kirby_animation_frames/Kirby_Walk/2.png";
+        walkArray[3] = "assets/kirby_animation_frames/Kirby_Walk/3.png";
+        walkArray[4] = "assets/kirby_animation_frames/Kirby_Walk/4.png";
+        walkArray[5] = "assets/kirby_animation_frames/Kirby_Walk/5.png";
+        walkArray[6] = "assets/kirby_animation_frames/Kirby_Walk/6.png";
+        walkArray[7] = "assets/kirby_animation_frames/Kirby_Walk/7.png";
+        walkArray[8] = "assets/kirby_animation_frames/Kirby_Walk/8.png";
+        walkArray[9] = "assets/kirby_animation_frames/Kirby_Walk/9.png";
     } else if (kirby == "suck") {
         console.log("load suck");
         walkArray = new Array();
-        walkArray[0] = "assets/Kirby_Animation_Frames/kirby_suck/0.png";
-        walkArray[1] = "assets/Kirby_Animation_Frames/kirby_suck/1.png";
-        walkArray[2] = "assets/Kirby_Animation_Frames/kirby_suck/2.png";
-        walkArray[3] = "assets/Kirby_Animation_Frames/kirby_suck/3.png";
-        walkArray[4] = "assets/Kirby_Animation_Frames/kirby_suck/4.png";
-        f = 0;
+        walkArray[0] = "assets/kirby_animation_frames/kirby_suck/0.png";
+        walkArray[1] = "assets/kirby_animation_frames/kirby_suck/1.png";
+        walkArray[2] = "assets/kirby_animation_frames/kirby_suck/2.png";
+        walkArray[3] = "assets/kirby_animation_frames/kirby_suck/3.png";
+        walkArray[4] = "assets/kirby_animation_frames/kirby_suck/4.png";
+        wKirbyFrame = 0;
     }
-
 }
-
+// Resets item coordinates and places item right back beside chef Kirby's pot
 function resetItem() {
-    itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
-    itemY = 200 + (ckirby.height); // Y coordinate of tomato
+    itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of item
+    itemY = 200 + (ckirby.height); // Y coordinate of item
 }
 
+// Checks if Kirby has collided with current item (only one item can be called at a time or function will not work)
 function notCollided() {
     if (itemX <= ckirby.width * 2) {
         showItem = false;
@@ -187,28 +197,25 @@ function notCollided() {
         console.log("isSuck = true");
         isSuck = true;
         loadArray("suck");
+        // Play suck sound effect
+        suckSound = new loadSound("assets/audio/kirbysuck.mp3");
+        suckSound.play();
+        // Mirror is updated with new meme
+        updateMirror();
     }
     return true;
 }
-
-function drawItem(type) {
-    if (type == "tomato")
+// Draws item as it moves along the platform and towards Kirby
+function drawItem() {
+    if (itemType == "tomato")
         ctx.drawImage(tomato, itemX, itemY);
-    else if (type == "fireKirby") {} // draw Fire Kirby
+    else if (itemType == "fireKirby") {} // draw Fire Kirby
 
     itemX += dx
 }
 
-function scaleToFit(img) {
-    // get the scale
-    var scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-    // get the top left position of the image
-    var x = (canvas.width / 2.5) - (img.width / 2) * scale;
-    var y = (canvas.height / 2) - (img.height / 2) * scale;
-    ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
-}
-
-function landItem(time, type) {
+// A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
+function landItem(time) {
     if (!startTime) // it's the first frame
         startTime = time || performance.now();
 
@@ -218,18 +225,30 @@ function landItem(time, type) {
     var currentX = itemX + ((canvas.width - 50 - itemX) * deltaTime);
     var currentY = itemY + ((335 - itemY) * deltaTime);
 
-    if (deltaTime >= 1) { // this means we ended our animation
+    if (deltaTime >= 1) { // Animation has finished
         itemX = canvas.width - 50; // reset x variable
         itemY = 335; // reset y variable
         startTime = null; // reset startTime
-        if (type == "tomato")
+        if (itemType == "tomato")
             ctx.drawImage(tomato, itemX, itemY);
-        else if (type == "fireKirby") {} // draw fire Kirby sprite
+        else if (itemType == "fireKirby") {} // draw fire Kirby sprite
         itemLanded = true;
     } else {
-        ctx.drawImage(tomato, currentX, currentY);
+        if (itemType == "tomato")
+            ctx.drawImage(tomato, currentX, currentY);
+        else if (itemType == "fireKirby") {} // draw fire Kirby sprite
         requestAnimationFrame(landItem); // Continue with animation
     }
+}
+
+// Updates mirror with new meme
+function updateMirror() {
+    var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    while (currentmeme == newrandommeme && newrandommeme == meme0) {
+        newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    }
+    currentmeme = newrandommeme;
+
 }
 
 function onClick(e) {
@@ -238,10 +257,21 @@ function onClick(e) {
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
         if (!showItem) {
             showItem = true;
-            landItem(performance.now(), "tomato");
+            itemType = 'tomato';
+            landItem();
         }
     }
 
+}
+
+function loadSound(path) {
+    var audio = new Audio(path);
+    this.play = function() {
+        audio.play();
+    }
+    this.stop = function() {
+        audio.pause();
+    }
 }
 
 init();
