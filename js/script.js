@@ -9,19 +9,6 @@ var walkArray = new Array();
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
-// Memes
-var meme0 = new Image();
-var meme1 = new Image();
-var meme2 = new Image();
-var meme3 = new Image();
-// Load meme images
-meme0.src = "assets/kirby_animation_frames/kirby_memes/0.png";
-meme1.src = "assets/kirby_animation_frames/kirby_memes/1.png";
-meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png";
-meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png";
-// Meme Array
-const memearray = [meme0, meme1, meme2, meme3];
-var currentmeme = memearray[0];
 // Item display boolean
 var showItem = false;
 // Item has landed on grass platform boolean
@@ -47,6 +34,20 @@ var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
 var itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
 var itemY = 200 + (ckirby.height); // Y coordinate of tomato
+
+ * This function is used to import other files
+ * @param {*} file, this parameter is the relative filepath to another file 
+ */
+function include(file) {
+    var script = document.createElement('script');
+    script.src = file;
+    script.type = 'text/javascript';
+    script.defer = true;
+
+    document.getElementsByTagName('head').item(0).appendChild(script);
+}
+// Import rss.js
+include('js/rss.js');
 /**
  * Returns None
  * Canvas setup
