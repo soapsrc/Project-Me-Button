@@ -260,8 +260,8 @@ function updateMirror() {
 
 }
 
+// Handle single and double clicks
 let clickTimer
-
 function onSingleClick(e){
     if (e.detail === 1) {
         clickTimer = setTimeout(() => {
