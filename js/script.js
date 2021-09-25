@@ -186,7 +186,7 @@ function loadArray(kirby) {
 }
 // Resets item coordinates and places item right back beside chef Kirby's pot
 function resetItem() {
-    itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of uten
+    itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of item
     itemY = 200 + (ckirby.height); // Y coordinate of item
 }
 
@@ -226,7 +226,7 @@ function landItem(time) {
     var currentX = itemX + ((canvas.width - 50 - itemX) * deltaTime);
     var currentY = itemY + ((335 - itemY) * deltaTime);
 
-    if (deltaTime >= 1) { // this means we ended our animation
+    if (deltaTime >= 1) { // Animation has finished
         itemX = canvas.width - 50; // reset x variable
         itemY = 335; // reset y variable
         startTime = null; // reset startTime
