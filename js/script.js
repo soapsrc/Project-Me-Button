@@ -109,11 +109,11 @@ function drawKirby() {
     // to a new meme image and not the default mirror
     // TODO uncomment when variable that signals meme change is finalized
     // if (memevariable) {
-    var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
-    while (currentmeme === newrandommeme && newrandommeme === meme0){
-        newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
-    }
-    currentmeme = newrandommeme;
+    // var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    // while (currentmeme === newrandommeme && newrandommeme === meme0){
+    //     newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    // }
+    // currentmeme = newrandommeme;
     // }
     // 
     ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
