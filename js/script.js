@@ -19,9 +19,9 @@ meme0.src = "assets/kirby_animation_frames/kirby_memes/0.png"
 meme1.src = "assets/kirby_animation_frames/kirby_memes/1.png"
 meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png"
 meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png"
-// Meme Array
+    // Meme Array
 const memearray = [meme0, meme1, meme2, meme3]
-// Item display boolean
+    // Item display boolean
 var showItem = false;
 // Item has landed on grass platform boolean
 var itemLanded = false;
@@ -74,7 +74,7 @@ function init() {
 
     // Draw kirby on load
     wkirby.onload = function() {
-        
+
         drawKirby();
     }
 }
@@ -215,7 +215,7 @@ function drawItem() {
     itemX += dx
 }
 
-/ A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
+// A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
 function landItem(time) {
     if (!startTime) // it's the first frame
         startTime = time || performance.now();
