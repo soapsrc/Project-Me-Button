@@ -35,11 +35,7 @@ function init() {
     pf.src = "assets/grasstile.png"
     wkirby.src = "assets/walkkirby/wkirby0.gif"
     tomato.src = "assets/mtomato.png"
-<<<<<<< Updated upstream
-    ckirby.src = "assets/chefkirby/ckirby0.gif"
-=======
     ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
->>>>>>> Stashed changes
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
