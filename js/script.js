@@ -165,7 +165,7 @@ function drawKirby() {
             isSuck = false;
             itemY += 5;
         }
-        // If Kirby is not sucking and is just walking, reset frame number
+        // If Kirby is not sucking and is just walking, reset frame number to restart animation
         wKirbyFrame = 0;
     }
 
