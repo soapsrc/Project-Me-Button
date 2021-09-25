@@ -4,6 +4,7 @@ var bg = new Image();
 var pf = new Image();
 // Walking Kirby
 var wkirby = new Image();
+var walkArray = new Array();
 // Meme tomato
 var tomato = new Image();
 // Chef Kirby
@@ -23,7 +24,7 @@ var pfX = 0; // X coordinate of scrolling platform
 var pfY = canvas.height - 90; // Y coordiante of scrolling platform
 var delayCount = 1; // Delay count of Walking Kirby and Chef Kirby
 var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
-var delay = 17; // Animation delay for Walking Kirby and Chef Kirby animation
+var delay = 20; // Animation delay for Walking Kirby and Chef Kirby animation
 var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
 var itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
@@ -36,6 +37,7 @@ function init() {
     wkirby.src = "assets/walkkirby/wkirby0.gif"
     tomato.src = "assets/mtomato.png"
     ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
+    loadArrays("default");
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
@@ -84,17 +86,35 @@ function draw() {
 }
 
 function drawKirby() {
-    ctx.drawImage(wkirby, -50, 190, wkirby.width * 4, wkirby.height * 4);
+    ctx.drawImage(wkirby, 10, 290, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
-        wkirby.src = "assets/walkkirby/wkirby" + f + ".gif";
+        console.log(f);
+        wkirby.src = walkArray[f];
         ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + f + ".gif";
         f++;
     }
 
-    if (delayCount < delay * 16) delayCount++;
+    if (delayCount < delay * 10) delayCount++;
     else delayCount = 1;
-    if (f > 15) f = 0;
+    if (f > 9) f = 0;
+
+}
+
+function loadArrays(kirby) {
+    if (kirby == "default") {
+        walkArray[0] = "assets/Kirby_Animation_Frames/Kirby_Walk/0.png";
+        walkArray[1] = "assets/Kirby_Animation_Frames/Kirby_Walk/1.png";
+        walkArray[2] = "assets/Kirby_Animation_Frames/Kirby_Walk/2.png";
+        walkArray[3] = "assets/Kirby_Animation_Frames/Kirby_Walk/3.png";
+        walkArray[4] = "assets/Kirby_Animation_Frames/Kirby_Walk/4.png";
+        walkArray[5] = "assets/Kirby_Animation_Frames/Kirby_Walk/5.png";
+        walkArray[6] = "assets/Kirby_Animation_Frames/Kirby_Walk/6.png";
+        walkArray[7] = "assets/Kirby_Animation_Frames/Kirby_Walk/7.png";
+        walkArray[8] = "assets/Kirby_Animation_Frames/Kirby_Walk/8.png";
+        walkArray[9] = "assets/Kirby_Animation_Frames/Kirby_Walk/9.png";
+
+    }
 
 }
 
@@ -123,7 +143,6 @@ function drawItem(type) {
         itemLanded = false;
         resetItem();
     }
-
 }
 
 function scaleToFit(img) {
