@@ -9,9 +9,12 @@ var walkArray = new Array();
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
-// Tomato boolean
+// Item display boolean
 var showItem = false;
+// Item has landed on glass platform boolean
 var itemLanded = false;
+// Kirby is inhaling something boolean
+var isSuck = false;
 
 // Declare variables
 var speed = 0.7; // FrameRate - lower is faster
@@ -34,10 +37,10 @@ function init() {
     // Load images
     bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png"
-    wkirby.src = "assets/walkkirby/wkirby0.gif"
+    wkirby.src = "assets/Kirby_Animation_Frames/Kirby_Walk/0.png"
     tomato.src = "assets/mtomato.png"
     ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
-    loadArrays("default");
+    loadArray("default");
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
@@ -80,29 +83,40 @@ function draw() {
     // amount to move
     pfX += dx;
 
-    drawKirby();
+    notCollided();
 
-    if (itemLanded && notCollided()) drawItem("tomato");
+    if (itemLanded) drawItem("tomato");
+    drawKirby();
 }
 
 function drawKirby() {
-    ctx.drawImage(wkirby, 10, 290, wkirby.width * 4, wkirby.height * 4);
+    ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
-        console.log(f);
         wkirby.src = walkArray[f];
         ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + f + ".gif";
         f++;
     }
 
-    if (delayCount < delay * 10) delayCount++;
+    if (delayCount < delay * walkArray.length) delayCount++;
     else delayCount = 1;
-    if (f > 9) f = 0;
+    // Last animation frame
+    if (f > walkArray.length - 1) {
+        if (isSuck) {
+            console.log("isSuck = false");
+
+            loadArray("default");
+            isSuck = false;
+            console.log("f1: " + f);
+        }
+        f = 0;
+    }
 
 }
 
-function loadArrays(kirby) {
+function loadArray(kirby) {
     if (kirby == "default") {
+        console.log("load default");
         walkArray[0] = "assets/Kirby_Animation_Frames/Kirby_Walk/0.png";
         walkArray[1] = "assets/Kirby_Animation_Frames/Kirby_Walk/1.png";
         walkArray[2] = "assets/Kirby_Animation_Frames/Kirby_Walk/2.png";
@@ -113,7 +127,15 @@ function loadArrays(kirby) {
         walkArray[7] = "assets/Kirby_Animation_Frames/Kirby_Walk/7.png";
         walkArray[8] = "assets/Kirby_Animation_Frames/Kirby_Walk/8.png";
         walkArray[9] = "assets/Kirby_Animation_Frames/Kirby_Walk/9.png";
-
+    } else if (kirby == "suck") {
+        console.log("load suck");
+        walkArray = new Array();
+        walkArray[0] = "assets/Kirby_Animation_Frames/kirby_suck/0.png";
+        walkArray[1] = "assets/Kirby_Animation_Frames/kirby_suck/1.png";
+        walkArray[2] = "assets/Kirby_Animation_Frames/kirby_suck/2.png";
+        walkArray[3] = "assets/Kirby_Animation_Frames/kirby_suck/3.png";
+        walkArray[4] = "assets/Kirby_Animation_Frames/kirby_suck/4.png";
+        f = 0;
     }
 
 }
@@ -125,10 +147,14 @@ function resetItem() {
 
 function notCollided() {
     if (itemX <= ckirby.width * 2) {
-        itemLanded = false;
         showItem = false;
+        itemLanded = false;
         resetItem();
-        return false;
+        return true;
+    } else if (itemX <= ckirby.width * 2 + 35 && !isSuck) {
+        console.log("isSuck = true");
+        isSuck = true;
+        loadArray("suck");
     }
     return true;
 }
@@ -137,12 +163,8 @@ function drawItem(type) {
     if (type == "tomato")
         ctx.drawImage(tomato, itemX, itemY);
     else if (type == "fireKirby") {} // draw Fire Kirby
+
     itemX += dx
-    if (itemX < -tomato.width) {
-        showItem = false;
-        itemLanded = false;
-        resetItem();
-    }
 }
 
 function scaleToFit(img) {
