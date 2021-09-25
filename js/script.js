@@ -9,9 +9,6 @@ var walkArray = new Array();
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
-
-// Meme Holder
-var memeholder = new Image();
 // Memes
 var meme0 = new Image();
 var meme1 = new Image();
