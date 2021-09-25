@@ -15,6 +15,7 @@ var showItem = false;
 var itemLanded = false;
 // Kirby is inhaling something boolean
 var isSuck = false;
+var itemType;
 
 // Declare variables
 var speed = 0.7; // FrameRate - lower is faster
@@ -82,10 +83,10 @@ function draw() {
     ctx.drawImage(pf, pfX, pfY, imgW, imgH);
     // amount to move
     pfX += dx;
-
+    // Check if collided with item
     notCollided();
 
-    if (itemLanded) drawItem("tomato");
+    if (itemLanded) drawItem(itemType);
     drawKirby();
 }
 
@@ -113,7 +114,7 @@ function drawKirby() {
     }
 
 }
-
+// Manually loads images into an image array
 function loadArray(kirby) {
     if (kirby == "default") {
         console.log("load default");
@@ -139,12 +140,17 @@ function loadArray(kirby) {
     }
 
 }
-
+// Resets item coordinates and places item right back beside chef kirby's pot
 function resetItem() {
-    itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
-    itemY = 200 + (ckirby.height); // Y coordinate of tomato
+    itemX = (canvas.width / 2) + ckirby.width; // X coordinate of item
+    itemY = 200 + (ckirby.height); // Y coordinate of item
 }
 
+// Updates mirror with new meme
+function updateMirror() {
+
+}
+// Checks if Kirby has collided with current item (only one item can be called at a time or function will not work)
 function notCollided() {
     if (itemX <= ckirby.width * 2) {
         showItem = false;
@@ -155,14 +161,16 @@ function notCollided() {
         console.log("isSuck = true");
         isSuck = true;
         loadArray("suck");
+        // Mirror is updated with new meme
+        updateMirror();
     }
     return true;
 }
 
-function drawItem(type) {
-    if (type == "tomato")
+function drawItem() {
+    if (itemType == "tomato")
         ctx.drawImage(tomato, itemX, itemY);
-    else if (type == "fireKirby") {} // draw Fire Kirby
+    else if (itemType == "fireKirby") {} // draw Fire Kirby
 
     itemX += dx
 }
@@ -178,7 +186,7 @@ function scaleToFit(img) {
 
 // A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
 
-function landItem(time, type) {
+function landItem(time) {
     if (!startTime) // it's the first frame
         startTime = time || performance.now();
 
@@ -192,12 +200,14 @@ function landItem(time, type) {
         itemX = canvas.width - 50; // reset x variable
         itemY = 335; // reset y variable
         startTime = null; // reset startTime
-        if (type == "tomato")
+        if (itemType == "tomato")
             ctx.drawImage(tomato, itemX, itemY);
-        else if (type == "fireKirby") {} // draw fire Kirby sprite
+        else if (itemType == "fireKirby") {} // draw fire Kirby sprite
         itemLanded = true;
     } else {
-        ctx.drawImage(tomato, currentX, currentY);
+        if (itemType == "tomato")
+            ctx.drawImage(tomato, currentX, currentY);
+        else if (itemType == "fireKirby") {} // draw fire Kirby sprite
         requestAnimationFrame(landItem); // Continue with animation
     }
 }
@@ -207,7 +217,8 @@ function onClick(e) {
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
         if (!showItem) {
             showItem = true;
-            landItem(performance.now(), "tomato");
+            itemType = 'tomato';
+            landItem();
         }
     }
 
