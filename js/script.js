@@ -35,7 +35,11 @@ function init() {
     pf.src = "assets/grasstile.png"
     wkirby.src = "assets/walkkirby/wkirby0.gif"
     tomato.src = "assets/mtomato.png"
+<<<<<<< Updated upstream
     ckirby.src = "assets/chefkirby/ckirby0.gif"
+=======
+    ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
+>>>>>>> Stashed changes
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
@@ -88,7 +92,7 @@ function drawKirby() {
     ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
         wkirby.src = "assets/walkkirby/wkirby" + f + ".gif";
-        ckirby.src = "assets/chefkirby/ckirby" + f + ".gif";
+        ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + f + ".gif";
         f++;
     }
 
