@@ -45,7 +45,7 @@ var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
 var delay = 20; // Animation delay for Walking Kirby and Chef Kirby animation
 var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
-var itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+var itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
 var itemY = 200 + (ckirby.height); // Y coordinate of tomato
 
 function init() {
@@ -53,7 +53,7 @@ function init() {
     bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png"
 
-    wkirby.src = "assets/Kirby_Animation_Frames/Kirby_Walk/0.png"
+    wkirby.src = "assets/kirby_Animation_Frames/Kirby_Walk/0.png"
     tomato.src = "assets/mtomato.png"
     ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
     loadArray("default");
@@ -128,7 +128,7 @@ function drawKirby() {
     // 
     ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
-    ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
         wkirby.src = walkArray[f];
         ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + f + ".gif";
@@ -178,7 +178,7 @@ function loadArray(kirby) {
 }
 
 function resetItem() {
-    itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+    itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
     itemY = 200 + (ckirby.height); // Y coordinate of tomato
 }
 
@@ -208,7 +208,7 @@ function scaleToFit(img) {
     // get the scale
     var scale = Math.min(canvas.width / img.width, canvas.height / img.height);
     // get the top left position of the image
-    var x = (canvas.width / 2) - (img.width / 2) * scale;
+    var x = (canvas.width / 2.5) - (img.width / 2) * scale;
     var y = (canvas.height / 2) - (img.height / 2) * scale;
     ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
 }
@@ -239,7 +239,7 @@ function landItem(time, type) {
 
 function onClick(e) {
 
-    if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
+    if (e.pageX > canvas.width / 2.5 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
         if (!showItem) {
             showItem = true;
