@@ -8,12 +8,25 @@ var wkirby = new Image();
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
+// Meme Holder
+var memeholder = new Image();
+// Memes
+var meme0 = new Image();
+var meme1 = new Image();
+var meme2 = new Image();
+var meme3 = new Image();
+// Load meme images
+meme0.src = "assets/kirby_animation_frames/kirby_memes/0.png"
+meme1.src = "assets/kirby_animation_frames/kirby_memes/1.png"
+meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png"
+meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png"
+// Meme Array
+const memearray = [meme0, meme1, meme2, meme3]
 // Tomato boolean
 var showTomato = false;
 var tomatoLanded = false;
-
 // Declare variables
-var speed = 0.7; // FrameRate - lower is faster
+var speed = .7; // FrameRate - lower is faster
 var scale = 1.05; // Scale of the platform image
 var dx = -0.75; // Offset of pfX
 var ctx; // Canvas context
@@ -26,7 +39,7 @@ var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
 var delay = 17; // Animation delay for Walking Kirby and Chef Kirby animation
 var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
-var tomatoX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+var tomatoX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
 var tomatoY = 200 + (ckirby.height); // Y coordinate of tomato
 
 function init() {
@@ -56,6 +69,7 @@ function init() {
         }
         // 
     wkirby.onload = function() {
+        
         drawKirby();
     }
 
@@ -83,12 +97,34 @@ function draw() {
     if (tomatoLanded) drawTomato();
 }
 
+/**
+ * Returns None
+ * This func continuously draws chef Kirby, walking Kirby
+ * and the meme mirror.
+ */
 function drawKirby() {
+    // Initialize currentmeme to the Meme Mirror
+    var currentmeme = memearray[0];
+
+    // If we need to change the meme image, make sure to change
+    // to a new meme image and not the default mirror
+    // TODO uncomment when variable that signals meme change is finalized
+    // if (memevariable) {
+    var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    while (currentmeme === newrandommeme && newrandommeme === meme0){
+        newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    }
+    currentmeme = newrandommeme;
+    // }
+    // 
+    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     ctx.drawImage(wkirby, -50, 190, wkirby.width * 4, wkirby.height * 4);
-    ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    
     if (delayCount % delay == 0) {
         wkirby.src = "assets/walkkirby/wkirby" + f + ".gif";
         ckirby.src = "assets/chefkirby/ckirby" + f + ".gif";
+        
         f++;
     }
 
@@ -98,13 +134,14 @@ function drawKirby() {
 
 }
 
+
 function drawTomato() {
     ctx.drawImage(tomato, tomatoX, tomatoY);
     tomatoX += dx
     if (tomatoX < -tomato.width) {
         showTomato = false;
         tomatoLanded = false;
-        tomatoX = (canvas.width / 2) + ckirby.width;
+        tomatoX = (canvas.width / 2.5) + ckirby.width;
         tomatoY = 200 + (ckirby.height);
     }
 
@@ -142,7 +179,7 @@ function drawItem(time) {
 }
 
 function onClick(e) {
-    if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
+    if (e.pageX > canvas.width / 2.5 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
         if (!showTomato) {
             showTomato = true;
