@@ -53,9 +53,9 @@ function init() {
     bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png"
 
-    wkirby.src = "assets/kirby_Animation_Frames/Kirby_Walk/0.png"
+    wkirby.src = "assets/kirby_animation_frames/Kirby_Walk/0.png"
     tomato.src = "assets/mtomato.png"
-    ckirby.src = "assets/Kirby_animation_frames/chef_kirby/ckirby0.gif"
+    ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif"
     loadArray("default");
 
     // Get canvas context and add double click event listener
