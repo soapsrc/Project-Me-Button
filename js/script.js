@@ -13,6 +13,7 @@ var iceItem = new Image();
 var mirrorItem = new Image();
 var painterItem = new Image();
 var swordItem = new Image();
+const copyItemsArray = [fireItem, iceItem, mirrorItem, painterItem, swordItem];
 // Chef Kirby
 var ckirby = new Image();
 // Item display boolean
@@ -231,7 +232,6 @@ function landItem(time) {
 
     // deltaTime should be in the range [0 ~ 1]
     var deltaTime = (time - startTime) / duration;
-    // currentPos = previous position + (difference * deltaTime)
     var currentX = itemX + ((canvas.width - 50 - itemX) * deltaTime);
     var currentY = itemY + ((335 - itemY) * deltaTime);
 
@@ -243,7 +243,6 @@ function landItem(time) {
         itemLanded = true;
     } else {
         ctx.drawImage(itemType, currentX, currentY);
-
         requestAnimationFrame(landItem); // Continue with animation
     }
 }
@@ -255,7 +254,6 @@ function updateMirror() {
         newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
     }
     currentmeme = newrandommeme;
-
 }
 
 // Handle single and double clicks
@@ -263,7 +261,7 @@ let clickTimer
 function onSingleClick(e){
     if (e.detail === 1) {
         clickTimer = setTimeout(() => {
-            releaseItem(fireItem, e);
+            releaseItem(copyItemsArray[Math.floor(Math.random() * copyItemsArray.length)], e);
         }, 200)
     }
 }
