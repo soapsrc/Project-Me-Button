@@ -180,18 +180,17 @@ function drawKirby() {
 function loadArray(kirby) {
     if (kirby == "default") {
         console.log("load default");
-        walkArray = animationDict["walkingAnimations"]["normal"]
 
-        // walkArray[0] = "assets/kirby_animation_frames/Kirby_Walk/0.png";
-        // walkArray[1] = "assets/kirby_animation_frames/Kirby_Walk/1.png";
-        // walkArray[2] = "assets/kirby_animation_frames/Kirby_Walk/2.png";
-        // walkArray[3] = "assets/kirby_animation_frames/Kirby_Walk/3.png";
-        // walkArray[4] = "assets/kirby_animation_frames/Kirby_Walk/4.png";
-        // walkArray[5] = "assets/kirby_animation_frames/Kirby_Walk/5.png";
-        // walkArray[6] = "assets/kirby_animation_frames/Kirby_Walk/6.png";
-        // walkArray[7] = "assets/kirby_animation_frames/Kirby_Walk/7.png";
-        // walkArray[8] = "assets/kirby_animation_frames/Kirby_Walk/8.png";
-        // walkArray[9] = "assets/kirby_animation_frames/Kirby_Walk/9.png";
+        walkArray[0] = "assets/kirby_animation_frames/Kirby_Walk/0.png";
+        walkArray[1] = "assets/kirby_animation_frames/Kirby_Walk/1.png";
+        walkArray[2] = "assets/kirby_animation_frames/Kirby_Walk/2.png";
+        walkArray[3] = "assets/kirby_animation_frames/Kirby_Walk/3.png";
+        walkArray[4] = "assets/kirby_animation_frames/Kirby_Walk/4.png";
+        walkArray[5] = "assets/kirby_animation_frames/Kirby_Walk/5.png";
+        walkArray[6] = "assets/kirby_animation_frames/Kirby_Walk/6.png";
+        walkArray[7] = "assets/kirby_animation_frames/Kirby_Walk/7.png";
+        walkArray[8] = "assets/kirby_animation_frames/Kirby_Walk/8.png";
+        walkArray[9] = "assets/kirby_animation_frames/Kirby_Walk/9.png";
     } else if (kirby == "suck") {
         console.log("load suck");
         walkArray = new Array();

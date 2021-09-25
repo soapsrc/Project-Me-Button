@@ -10,21 +10,22 @@ meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png";
 meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png";
 var currentmeme = meme0;
 // Meme Array
-const memearray = [meme0, meme1, meme2, meme3]
+var memearray = [meme0, meme1, meme2, meme3]
 // Copy Items
 var fireItem = new Image();
 var iceItem = new Image();
 var mirrorItem = new Image();
 var painterItem = new Image();
 var swordItem = new Image();
-// Load Copy Images
+// Load Copy Items
 fireItem.src = "assets/Kirby_Animation_Frames/copy_abilities/1.png";
 iceItem.src = "assets/Kirby_Animation_Frames/copy_abilities/0.png";
 mirrorItem.src = "assets/Kirby_Animation_Frames/copy_abilities/2.png";
 painterItem.src = "assets/Kirby_Animation_Frames/copy_abilities/4.png";
 swordItem.src = "assets/Kirby_Animation_Frames/copy_abilities/3.png";
+
 // Copy Items Array
-const copyItemsArray = [fireItem, iceItem, mirrorItem, painterItem, swordItem];
+var copyItemsArray = [fireItem, iceItem, mirrorItem, painterItem, swordItem];
 // Normal Kirby Walk
 var normalKirbyWalk0 = new Image();
 var normalKirbyWalk1 = new Image();
