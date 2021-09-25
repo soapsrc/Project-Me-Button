@@ -34,7 +34,7 @@ var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
 var itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
 var itemY = 200 + (ckirby.height); // Y coordinate of tomato
-
+/**
  * This function is used to import other files
  * @param {*} file, this parameter is the relative filepath to another file 
  */
