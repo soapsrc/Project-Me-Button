@@ -7,6 +7,7 @@ var wkirby = new Image();
 var walkArray = new Array();
 // Meme tomato
 var tomato = new Image();
+var fireKirby = new Image();
 // Chef Kirby
 var ckirby = new Image();
 // Memes
@@ -51,15 +52,18 @@ var itemY = 200 + (ckirby.height); // Y coordinate of tomato
 function init() {
     // Load images
     bg.src = "assets/kirbydreamland.jpeg";
-    pf.src = "assets/grasstile.png"
-    wkirby.src = "assets/kirby_animation_frames/Kirby_Walk/0.png"
-    tomato.src = "assets/mtomato.png"
-    ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif"
+    pf.src = "assets/grasstile.png";
+    wkirby.src = "assets/kirby_animation_frames/Kirby_Walk/0.png";
+    tomato.src = "assets/mtomato.png";
+    ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif";
+    fireKirby.src = "assets/Kirby_Animation_Frames/copy_abilities/1.png";
     loadArray("default");
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
-    document.getElementById('canvas').addEventListener("dblclick", onClick, false);
+    document.getElementById('canvas').addEventListener("click", onSingleClick, false);
+    document.getElementById('canvas').addEventListener("dblclick", onDoubleClick, false);
+
 
     // Load background image
     bg.onload = function() {
@@ -208,7 +212,9 @@ function notCollided() {
 function drawItem() {
     if (itemType == "tomato")
         ctx.drawImage(tomato, itemX, itemY);
-    else if (itemType == "fireKirby") {} // draw Fire Kirby
+    else if (itemType == "fireKirby") {
+        ctx.drawImage(fireKirby, itemX, itemY);
+    } // draw Fire Kirby
 
     itemX += dx
 }
@@ -230,12 +236,16 @@ function landItem(time) {
         startTime = null; // reset startTime
         if (itemType == "tomato")
             ctx.drawImage(tomato, itemX, itemY);
-        else if (itemType == "fireKirby") {} // draw fire Kirby sprite
+        else if (itemType == "fireKirby") {
+            ctx.drawImage(fireKirby, itemX, itemY);
+        } // draw fire Kirby sprite
         itemLanded = true;
     } else {
         if (itemType == "tomato")
             ctx.drawImage(tomato, currentX, currentY);
-        else if (itemType == "fireKirby") {} // draw fire Kirby sprite
+        else if (itemType == "fireKirby") {
+            ctx.drawImage(fireKirby, currentX, currentY);
+        } // draw fire Kirby sprite
         requestAnimationFrame(landItem); // Continue with animation
     }
 }
@@ -250,17 +260,30 @@ function updateMirror() {
 
 }
 
-function onClick(e) {
+let clickTimer
 
+function onSingleClick(e){
+    if (e.detail === 1) {
+        clickTimer = setTimeout(() => {
+            releaseItem('fireKirby', e);
+        }, 200)
+    }
+}
+
+function onDoubleClick(e) {
+    clearTimeout(clickTimer)
+    releaseItem('tomato', e);
+}
+
+function releaseItem(releaseItemType, e) {
     if (e.pageX > canvas.width / 2.5 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
         if (!showItem) {
             showItem = true;
-            itemType = 'tomato';
+            itemType = releaseItemType;
             landItem();
         }
     }
-
 }
 
 function loadSound(path) {
