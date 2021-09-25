@@ -99,11 +99,15 @@ function scaleToFit(img) {
     ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
 }
 
+function animate() {
+
+}
+
 function onClick(e) {
 
     if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
-        drawTomato();
+        animate();
     }
 }
 
