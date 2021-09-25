@@ -94,7 +94,7 @@ function draw() {
     // Draw meme mirror
     drawMirror();
     // Check if Kirby collided with item
-    notCollided();
+    checkCollision();
     // Check if item landed on grass platform
     if (itemLanded) drawItem(itemType);
     //  Draw Kirby
@@ -132,7 +132,7 @@ function drawPlatform() {
 }
 /**
  * Returns None
- * Draws chef Kirby, walking Kirby
+ * Draws meme mirror using currentmeme image
  */
 function drawMirror() {
     // Initialize currentmeme to the Meme Mirror
@@ -141,29 +141,31 @@ function drawMirror() {
 
 /**
  * Returns None
- * Draws chef Kirby, walking Kirby
+ * Draws chef Kirby and walking Kirby
  */
 function drawKirby() {
     // Draw walking Kirby and chef Kirby
     ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
-    if (delayCount % delay == 0) {
+    // Must delay Kirbys animation or else it will be too fast
+    if (delayCount % delay == 0) { // Only animate Kirbys when delayCount % delay == 0
         wkirby.src = walkArray[wKirbyFrame];
         ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby" + wKirbyFrame + ".gif";
-        wKirbyFrame++;
+        wKirbyFrame++; // Update Kirby frame
     }
-
+    // delayCount range = [1,delay * totalnumber of frames]
     if (delayCount < delay * walkArray.length) delayCount++;
     else delayCount = 1;
     // Last animation frame
     if (wKirbyFrame > walkArray.length - 1) {
+        // If Kirby is already sucking, default Kirby_Walk sprites is saved into walkArray
         if (isSuck) {
             console.log("isSuck = false");
-
             loadArray("default");
             isSuck = false;
             itemY += 5;
         }
+        // If Kirby is not sucking and is just walking, reset frame number
         wKirbyFrame = 0;
     }
 
@@ -208,7 +210,7 @@ function resetItem() {
  * Returns None
  * Checks if Kirby has collided with current item (only one item can be called at a time or function will not work)
  */
-function notCollided() {
+function checkCollision() {
     if (itemX <= ckirby.width * 2) {
         showItem = false;
         itemLanded = false;
