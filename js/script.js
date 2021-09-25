@@ -8,29 +8,36 @@ var wkirby = new Image();
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
-// Load images
-bg.src = "assets/kirbydreamland.jpeg";
-pf.src = "assets/grasstile.png"
-wkirby.src = "assets/walkkirby/wkirby0.gif"
-tomato.src = "assets/tomato.png"
-ckirby.src = "assets/chefkirby/ckirby0.gif"
-    // Declare variables
+// Tomato boolean
+var showTomato = false;
+
+// Declare variables
 var speed = 0.7; // lower is faster
 var scale = 1.05;
 var dx = -0.75;
 var ctx;
 canvas.width = 800;
 canvas.height = 451;
-var x = 0;
-var y = canvas.height - 90;
+var pfX = 0;
+var pfY = canvas.height - 90;
 var frame = 1;
 var f = 1;
 var delay = 17;
+var duration = 1500;
+var startTime;
+var tomatoX = (canvas.width / 2) + ckirby.width;
+var tomatoY = 200 + (ckirby.height);
 
 function init() {
-    // get canvas context
+    // Load images
+    bg.src = "assets/kirbydreamland.jpeg";
+    pf.src = "assets/grasstile.png"
+    wkirby.src = "assets/walkkirby/wkirby0.gif"
+    tomato.src = "assets/mtomato.png"
+    ckirby.src = "assets/chefkirby/ckirby0.gif"
+        // get canvas context
     ctx = document.getElementById('canvas').getContext('2d');
-    document.getElementById('canvas').addEventListener("click", onClick, false);
+    document.getElementById('canvas').addEventListener("dblclick", onClick, false);
 
     bg.onload = function() {
         scaleToFit(this);
@@ -54,25 +61,21 @@ function draw() {
     scaleToFit(bg);
 
     // reset, start from beginning
-    if (x < -imgW) {
-        x = 0;
+    if (pfX < -imgW) {
+        pfX = 0;
     }
     // draw additional image
-    if (x < canvas.width - imgW) {
-        ctx.drawImage(pf, x + imgW, y, imgW, imgH);
+    if (pfX < canvas.width - imgW) {
+        ctx.drawImage(pf, pfX + imgW, pfY, imgW, imgH);
     }
     // draw image
-    ctx.drawImage(pf, x, y, imgW, imgH);
+    ctx.drawImage(pf, pfX, pfY, imgW, imgH);
     // amount to move
-    x += dx;
+    pfX += dx;
 
     drawKirby();
 
-    ctx.beginPath();
-    ctx.lineWidth = "4";
-    ctx.strokeStyle = "red";
-    ctx.rect(canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
-    ctx.stroke();
+    if (showTomato) drawTomato();
 }
 
 function drawKirby() {
@@ -90,6 +93,11 @@ function drawKirby() {
 
 }
 
+function drawTomato() {
+    ctx.drawImage(tomato, tomatoX, tomatoY);
+    tomatoX += dx
+}
+
 function scaleToFit(img) {
     // get the scale
     var scale = Math.min(canvas.width / img.width, canvas.height / img.height);
@@ -99,16 +107,34 @@ function scaleToFit(img) {
     ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
 }
 
-function animate() {
+function drawItem(time) {
+    if (!startTime) // it's the first frame
+        startTime = time || performance.now();
 
+    // deltaTime should be in the range [0 ~ 1]
+    var deltaTime = (time - startTime) / duration;
+    // currentPos = previous position + (difference * deltaTime)
+    var currentX = tomatoX + ((canvas.width - 50 - tomatoX) * deltaTime);
+    var currentY = tomatoY + ((335 - tomatoY) * deltaTime);
+
+    if (deltaTime >= 1) { // this means we ended our animation
+        tomatoX = canvas.width - 50; // reset x variable
+        tomatoY = 335; // reset y variable
+        startTime = null; // reset startTime
+        ctx.drawImage(tomato, tomatoX, tomatoY);
+        showTomato = true;
+    } else {
+        ctx.drawImage(tomato, currentX, currentY);
+        requestAnimationFrame(drawItem); // do it again
+    }
 }
 
 function onClick(e) {
-
     if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
-        animate();
+        drawItem();
     }
+
 }
 
 init();
