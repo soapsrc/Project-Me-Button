@@ -96,7 +96,7 @@ function drawKirby() {
 function drawTomato() {
     ctx.drawImage(tomato, tomatoX, tomatoY);
     tomatoX += dx
-    if (tomatoX < 0) {
+    if (tomatoX < -tomato.width) {
         showTomato = false;
         tomatoX = (canvas.width / 2) + ckirby.width;
         tomatoY = 200 + (ckirby.height);
