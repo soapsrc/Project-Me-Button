@@ -80,7 +80,7 @@ function draw() {
 
     drawKirby();
 
-    if (itemLanded) drawItem("tomato");
+    if (itemLanded && notCollided()) drawItem("tomato");
 }
 
 function drawKirby() {
@@ -98,6 +98,21 @@ function drawKirby() {
 
 }
 
+function resetItem() {
+    itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+    itemY = 200 + (ckirby.height); // Y coordinate of tomato
+}
+
+function notCollided() {
+    if (itemX <= ckirby.width * 2) {
+        itemLanded = false;
+        showItem = false;
+        resetItem();
+        return false;
+    }
+    return true;
+}
+
 function drawItem(type) {
     if (type == "tomato")
         ctx.drawImage(tomato, itemX, itemY);
@@ -106,8 +121,7 @@ function drawItem(type) {
     if (itemX < -tomato.width) {
         showItem = false;
         itemLanded = false;
-        itemX = (canvas.width / 2) + ckirby.width;
-        itemY = 200 + (ckirby.height);
+        resetItem();
     }
 
 }
@@ -120,6 +134,8 @@ function scaleToFit(img) {
     var y = (canvas.height / 2) - (img.height / 2) * scale;
     ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
 }
+
+// A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
 
 function landItem(time, type) {
     if (!startTime) // it's the first frame
@@ -141,7 +157,7 @@ function landItem(time, type) {
         itemLanded = true;
     } else {
         ctx.drawImage(tomato, currentX, currentY);
-        requestAnimationFrame(landItem); // do it again
+        requestAnimationFrame(landItem); // Continue with animation
     }
 }
 
