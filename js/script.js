@@ -72,7 +72,6 @@ function init() {
         
         drawKirby();
     }
-
 }
 
 function draw() {
@@ -124,14 +123,12 @@ function drawKirby() {
     if (delayCount % delay == 0) {
         wkirby.src = "assets/walkkirby/wkirby" + f + ".gif";
         ckirby.src = "assets/chefkirby/ckirby" + f + ".gif";
-        
         f++;
     }
 
     if (delayCount < delay * 16) delayCount++;
     else delayCount = 1;
     if (f > 15) f = 0;
-
 }
 
 
@@ -144,7 +141,6 @@ function drawTomato() {
         tomatoX = (canvas.width / 2.5) + ckirby.width;
         tomatoY = 200 + (ckirby.height);
     }
-
 }
 
 function scaleToFit(img) {
@@ -186,7 +182,6 @@ function onClick(e) {
             drawItem();
         }
     }
-
 }
 
 init();
