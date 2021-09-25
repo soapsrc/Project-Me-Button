@@ -9,9 +9,21 @@ var walkArray = new Array();
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
+// Memes
+var meme0 = new Image();
+var meme1 = new Image();
+var meme2 = new Image();
+var meme3 = new Image();
+// Load meme images
+meme0.src = "assets/kirby_animation_frames/kirby_memes/0.png"
+meme1.src = "assets/kirby_animation_frames/kirby_memes/1.png"
+meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png"
+meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png"
+// Meme Array
+const memearray = [meme0, meme1, meme2, meme3]
 // Item display boolean
 var showItem = false;
-// Item has landed on glass platform boolean
+// Item has landed on grass platform boolean
 var itemLanded = false;
 // Kirby is inhaling something boolean
 var isSuck = false;
@@ -31,14 +43,15 @@ var wKirbyFrame = 1; // Current frame of Walking Kirby and Chef Kerby animation
 var delay = 20; // Animation delay for Walking Kirby and Chef Kirby animation
 var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
-var itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+var itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
 var itemY = 200 + (ckirby.height); // Y coordinate of tomato
 
 function init() {
     // Load images
     bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png"
-    wkirby.src = "assets/Kirby_Animation_Frames/Kirby_Walk/0.png"
+
+    wkirby.src = "assets/kirby_Animation_Frames/Kirby_Walk/0.png"
     tomato.src = "assets/mtomato.png"
     ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
     loadArray("default");
@@ -61,9 +74,9 @@ function init() {
 
     // Draw kirby on load
     wkirby.onload = function() {
+        
         drawKirby();
     }
-
 }
 
 function draw() {
@@ -102,9 +115,29 @@ function drawPlatform() {
     pfX += dx;
 }
 
+/**
+ * Returns None
+ * This func continuously draws chef Kirby, walking Kirby
+ * and the meme mirror.
+ */
 function drawKirby() {
+    // Initialize currentmeme to the Meme Mirror
+    var currentmeme = memearray[0];
+
+    // If we need to change the meme image, make sure to change
+    // to a new meme image and not the default mirror
+    // TODO uncomment when variable that signals meme change is finalized
+    // if (memevariable) {
+    // var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    // while (currentmeme === newrandommeme && newrandommeme === meme0){
+    //     newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    // }
+    // currentmeme = newrandommeme;
+    // }
+    // 
+    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
-    ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
         wkirby.src = walkArray[wKirbyFrame];
         ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + wKirbyFrame + ".gif";
@@ -121,7 +154,6 @@ function drawKirby() {
             loadArray("default");
             isSuck = false;
             itemY += 5;
-            console.log("f1: " + wKirbyFrame);
         }
         wKirbyFrame = 0;
     }
@@ -152,9 +184,9 @@ function loadArray(kirby) {
         wKirbyFrame = 0;
     }
 }
-// Resets item coordinates and places item right back beside chef kirby's pot
+// Resets item coordinates and places item right back beside chef Kirby's pot
 function resetItem() {
-    itemX = (canvas.width / 2) + ckirby.width; // X coordinate of item
+    itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of uten
     itemY = 200 + (ckirby.height); // Y coordinate of item
 }
 
@@ -183,7 +215,7 @@ function drawItem() {
     itemX += dx
 }
 
-// A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
+/ A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
 function landItem(time) {
     if (!startTime) // it's the first frame
         startTime = time || performance.now();
@@ -216,7 +248,8 @@ function updateMirror() {
 }
 
 function onClick(e) {
-    if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
+
+    if (e.pageX > canvas.width / 2.5 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
         if (!showItem) {
             showItem = true;
