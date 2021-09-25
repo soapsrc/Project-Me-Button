@@ -27,7 +27,7 @@ canvas.height = 451;
 var pfX = 0; // X coordinate of scrolling platform
 var pfY = canvas.height - 90; // Y coordiante of scrolling platform
 var delayCount = 1; // Delay count of Walking Kirby and Chef Kirby
-var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
+var wKirbyFrame = 1; // Current frame of Walking Kirby and Chef Kerby animation
 var delay = 20; // Animation delay for Walking Kirby and Chef Kirby animation
 var duration = 1500; // Duration of chef -> platform item animation
 var startTime; // Start time of chef -> platform item animation
@@ -54,13 +54,12 @@ function init() {
 
     // Load scrolling platform
     pf.onload = function() {
-            imgW = pf.width * scale;
-            imgH = pf.height * scale;
 
-            // Set refresh rate
-            return setInterval(draw, speed);
-        }
-        // 
+        // Set refresh rate
+        return setInterval(draw, speed);
+    }
+
+    // Draw kirby on load
     wkirby.onload = function() {
         drawKirby();
     }
@@ -70,19 +69,8 @@ function init() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
     scaleToFit(bg);
-
-    // reset, start from beginning
-    if (pfX < -imgW) {
-        pfX = 0;
-    }
-    // draw additional image
-    if (pfX < canvas.width - imgW) {
-        ctx.drawImage(pf, pfX + imgW, pfY, imgW, imgH);
-    }
-    // draw image
-    ctx.drawImage(pf, pfX, pfY, imgW, imgH);
-    // amount to move
-    pfX += dx;
+    // Draw scrolling platform
+    drawPlatform();
     // Check if collided with item
     notCollided();
 
@@ -90,27 +78,52 @@ function draw() {
     drawKirby();
 }
 
+function scaleToFit(img) {
+    // get the scale
+    var scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+    // get the top left position of the image
+    var x = (canvas.width / 2) - (img.width / 2) * scale;
+    var y = (canvas.height / 2) - (img.height / 2) * scale;
+    ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
+}
+
+function drawPlatform() {
+    // reset, start from beginning
+    if (pfX < -pf.width) {
+        pfX = 0;
+    }
+    // draw additional image
+    if (pfX < canvas.width - pf.width) {
+        ctx.drawImage(pf, pfX + pf.width, pfY, pf.width, pf.height);
+    }
+    // draw image
+    ctx.drawImage(pf, pfX, pfY, pf.width, pf.height);
+    // amount to move
+    pfX += dx;
+}
+
 function drawKirby() {
     ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
-        wkirby.src = walkArray[f];
-        ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + f + ".gif";
-        f++;
+        wkirby.src = walkArray[wKirbyFrame];
+        ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + wKirbyFrame + ".gif";
+        wKirbyFrame++;
     }
 
     if (delayCount < delay * walkArray.length) delayCount++;
     else delayCount = 1;
     // Last animation frame
-    if (f > walkArray.length - 1) {
+    if (wKirbyFrame > walkArray.length - 1) {
         if (isSuck) {
             console.log("isSuck = false");
 
             loadArray("default");
             isSuck = false;
-            console.log("f1: " + f);
+            itemY += 5;
+            console.log("f1: " + wKirbyFrame);
         }
-        f = 0;
+        wKirbyFrame = 0;
     }
 
 }
@@ -136,9 +149,8 @@ function loadArray(kirby) {
         walkArray[2] = "assets/Kirby_Animation_Frames/kirby_suck/2.png";
         walkArray[3] = "assets/Kirby_Animation_Frames/kirby_suck/3.png";
         walkArray[4] = "assets/Kirby_Animation_Frames/kirby_suck/4.png";
-        f = 0;
+        wKirbyFrame = 0;
     }
-
 }
 // Resets item coordinates and places item right back beside chef kirby's pot
 function resetItem() {
@@ -146,10 +158,6 @@ function resetItem() {
     itemY = 200 + (ckirby.height); // Y coordinate of item
 }
 
-// Updates mirror with new meme
-function updateMirror() {
-
-}
 // Checks if Kirby has collided with current item (only one item can be called at a time or function will not work)
 function notCollided() {
     if (itemX <= ckirby.width * 2) {
@@ -166,7 +174,7 @@ function notCollided() {
     }
     return true;
 }
-
+// Draws item as it moves along the platform and towards Kirby
 function drawItem() {
     if (itemType == "tomato")
         ctx.drawImage(tomato, itemX, itemY);
@@ -175,17 +183,7 @@ function drawItem() {
     itemX += dx
 }
 
-function scaleToFit(img) {
-    // get the scale
-    var scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-    // get the top left position of the image
-    var x = (canvas.width / 2) - (img.width / 2) * scale;
-    var y = (canvas.height / 2) - (img.height / 2) * scale;
-    ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
-}
-
 // A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
-
 function landItem(time) {
     if (!startTime) // it's the first frame
         startTime = time || performance.now();
@@ -210,6 +208,11 @@ function landItem(time) {
         else if (itemType == "fireKirby") {} // draw fire Kirby sprite
         requestAnimationFrame(landItem); // Continue with animation
     }
+}
+
+// Updates mirror with new meme
+function updateMirror() {
+
 }
 
 function onClick(e) {
