@@ -240,7 +240,7 @@ function landItem(time) {
 // Updates mirror with new meme
 function updateMirror() {
     var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
-    while (currentmeme == newrandommeme) {
+    while (currentmeme == newrandommeme && newrandommeme == meme0) {
         newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
     }
     currentmeme = newrandommeme;
