@@ -9,24 +9,25 @@ var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
 // Tomato boolean
-var showTomato = false;
+var showItem = false;
+var itemLanded = false;
 
 // Declare variables
-var speed = 0.7; // lower is faster
-var scale = 1.05;
-var dx = -0.75;
-var ctx;
+var speed = 0.7; // FrameRate - lower is faster
+var scale = 1.05; // Scale of the platform image
+var dx = -0.75; // Offset of pfX
+var ctx; // Canvas context
 canvas.width = 800;
 canvas.height = 451;
-var pfX = 0;
-var pfY = canvas.height - 90;
-var frame = 1;
-var f = 1;
-var delay = 17;
-var duration = 1500;
-var startTime;
-var tomatoX = (canvas.width / 2) + ckirby.width;
-var tomatoY = 200 + (ckirby.height);
+var pfX = 0; // X coordinate of scrolling platform
+var pfY = canvas.height - 90; // Y coordiante of scrolling platform
+var delayCount = 1; // Delay count of Walking Kirby and Chef Kirby
+var f = 1; // Current frame of Walking Kirby and Chef Kerby animation
+var delay = 17; // Animation delay for Walking Kirby and Chef Kirby animation
+var duration = 1500; // Duration of chef -> platform item animation
+var startTime; // Start time of chef -> platform item animation
+var itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+var itemY = 200 + (ckirby.height); // Y coordinate of tomato
 
 function init() {
     // Load images
@@ -34,22 +35,26 @@ function init() {
     pf.src = "assets/grasstile.png"
     wkirby.src = "assets/walkkirby/wkirby0.gif"
     tomato.src = "assets/mtomato.png"
-    ckirby.src = "assets/chefkirby/ckirby0.gif"
-        // get canvas context
+    ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
+
+    // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
     document.getElementById('canvas').addEventListener("dblclick", onClick, false);
 
+    // Load background image
     bg.onload = function() {
         scaleToFit(this);
     }
 
+    // Load scrolling platform
     pf.onload = function() {
-        imgW = pf.width * scale;
-        imgH = pf.height * scale;
+            imgW = pf.width * scale;
+            imgH = pf.height * scale;
 
-        // set refresh rate
-        return setInterval(draw, speed);
-    }
+            // Set refresh rate
+            return setInterval(draw, speed);
+        }
+        // 
     wkirby.onload = function() {
         drawKirby();
     }
@@ -75,27 +80,50 @@ function draw() {
 
     drawKirby();
 
-    if (showTomato) drawTomato();
+    if (itemLanded && notCollided()) drawItem("tomato");
 }
 
 function drawKirby() {
     ctx.drawImage(wkirby, -50, 190, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
-    if (frame % delay == 0) {
+    if (delayCount % delay == 0) {
         wkirby.src = "assets/walkkirby/wkirby" + f + ".gif";
-        ckirby.src = "assets/chefkirby/ckirby" + f + ".gif";
+        ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + f + ".gif";
         f++;
     }
 
-    if (frame < delay * 16) frame++;
-    else frame = 1;
+    if (delayCount < delay * 16) delayCount++;
+    else delayCount = 1;
     if (f > 15) f = 0;
 
 }
 
-function drawTomato() {
-    ctx.drawImage(tomato, tomatoX, tomatoY);
-    tomatoX += dx
+function resetItem() {
+    itemX = (canvas.width / 2) + ckirby.width; // X coordinate of tomato
+    itemY = 200 + (ckirby.height); // Y coordinate of tomato
+}
+
+function notCollided() {
+    if (itemX <= ckirby.width * 2) {
+        itemLanded = false;
+        showItem = false;
+        resetItem();
+        return false;
+    }
+    return true;
+}
+
+function drawItem(type) {
+    if (type == "tomato")
+        ctx.drawImage(tomato, itemX, itemY);
+    else if (type == "fireKirby") {} // draw Fire Kirby
+    itemX += dx
+    if (itemX < -tomato.width) {
+        showItem = false;
+        itemLanded = false;
+        resetItem();
+    }
+
 }
 
 function scaleToFit(img) {
@@ -107,32 +135,39 @@ function scaleToFit(img) {
     ctx.drawImage(img, 0, 0, img.width * scale, img.height * scale);
 }
 
-function drawItem(time) {
+// A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
+
+function landItem(time, type) {
     if (!startTime) // it's the first frame
         startTime = time || performance.now();
 
     // deltaTime should be in the range [0 ~ 1]
     var deltaTime = (time - startTime) / duration;
     // currentPos = previous position + (difference * deltaTime)
-    var currentX = tomatoX + ((canvas.width - 50 - tomatoX) * deltaTime);
-    var currentY = tomatoY + ((335 - tomatoY) * deltaTime);
+    var currentX = itemX + ((canvas.width - 50 - itemX) * deltaTime);
+    var currentY = itemY + ((335 - itemY) * deltaTime);
 
     if (deltaTime >= 1) { // this means we ended our animation
-        tomatoX = canvas.width - 50; // reset x variable
-        tomatoY = 335; // reset y variable
+        itemX = canvas.width - 50; // reset x variable
+        itemY = 335; // reset y variable
         startTime = null; // reset startTime
-        ctx.drawImage(tomato, tomatoX, tomatoY);
-        showTomato = true;
+        if (type == "tomato")
+            ctx.drawImage(tomato, itemX, itemY);
+        else if (type == "fireKirby") {} // draw fire Kirby sprite
+        itemLanded = true;
     } else {
         ctx.drawImage(tomato, currentX, currentY);
-        requestAnimationFrame(drawItem); // do it again
+        requestAnimationFrame(landItem); // Continue with animation
     }
 }
 
 function onClick(e) {
     if (e.pageX > canvas.width / 2 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
         e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
-        drawItem();
+        if (!showItem) {
+            showItem = true;
+            landItem(performance.now(), "tomato");
+        }
     }
 
 }
