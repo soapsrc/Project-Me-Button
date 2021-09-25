@@ -15,18 +15,20 @@ var meme1 = new Image();
 var meme2 = new Image();
 var meme3 = new Image();
 // Load meme images
-meme0.src = "assets/kirby_animation_frames/kirby_memes/0.png"
-meme1.src = "assets/kirby_animation_frames/kirby_memes/1.png"
-meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png"
-meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png"
-    // Meme Array
-const memearray = [meme0, meme1, meme2, meme3]
-    // Item display boolean
+meme0.src = "assets/kirby_animation_frames/kirby_memes/0.png";
+meme1.src = "assets/kirby_animation_frames/kirby_memes/1.png";
+meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png";
+meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png";
+// Meme Array
+const memearray = [meme0, meme1, meme2, meme3];
+var currentmeme = memearray[0];
+// Item display boolean
 var showItem = false;
 // Item has landed on grass platform boolean
 var itemLanded = false;
 // Kirby is inhaling something boolean
 var isSuck = false;
+// Item type variable (tomato, sword, fire, ice, etc.)
 var itemType;
 
 // Declare variables
@@ -53,7 +55,7 @@ function init() {
 
     wkirby.src = "assets/kirby_Animation_Frames/Kirby_Walk/0.png"
     tomato.src = "assets/mtomato.png"
-    ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby0.gif"
+    ckirby.src = "assets/Kirby_animation_frames/chef_kirby/ckirby0.gif"
     loadArray("default");
 
     // Get canvas context and add double click event listener
@@ -84,9 +86,11 @@ function draw() {
     scaleToFit(bg);
     // Draw scrolling platform
     drawPlatform();
+    // Draw meme mirror
+    drawMirror();
     // Check if collided with item
     notCollided();
-
+    // Check if item landed on grass platform
     if (itemLanded) drawItem(itemType);
     drawKirby();
 }
@@ -115,32 +119,23 @@ function drawPlatform() {
     pfX += dx;
 }
 
+function drawMirror() {
+    // Initialize currentmeme to the Meme Mirror
+    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+}
+
 /**
  * Returns None
  * This func continuously draws chef Kirby, walking Kirby
  * and the meme mirror.
  */
 function drawKirby() {
-    // Initialize currentmeme to the Meme Mirror
-    var currentmeme = memearray[0];
-
-    // If we need to change the meme image, make sure to change
-    // to a new meme image and not the default mirror
-    // TODO uncomment when variable that signals meme change is finalized
-    // if (memevariable) {
-    // var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
-    // while (currentmeme === newrandommeme && newrandommeme === meme0){
-    //     newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
-    // }
-    // currentmeme = newrandommeme;
-    // }
-    // 
-    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    // Draw walking Kirby and chef Kirby
     ctx.drawImage(wkirby, 20, 290, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
     if (delayCount % delay == 0) {
         wkirby.src = walkArray[wKirbyFrame];
-        ckirby.src = "assets/Kirby_Animation_Frames/chef_kirby/ckirby" + wKirbyFrame + ".gif";
+        ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby" + wKirbyFrame + ".gif";
         wKirbyFrame++;
     }
 
@@ -163,24 +158,24 @@ function drawKirby() {
 function loadArray(kirby) {
     if (kirby == "default") {
         console.log("load default");
-        walkArray[0] = "assets/Kirby_Animation_Frames/Kirby_Walk/0.png";
-        walkArray[1] = "assets/Kirby_Animation_Frames/Kirby_Walk/1.png";
-        walkArray[2] = "assets/Kirby_Animation_Frames/Kirby_Walk/2.png";
-        walkArray[3] = "assets/Kirby_Animation_Frames/Kirby_Walk/3.png";
-        walkArray[4] = "assets/Kirby_Animation_Frames/Kirby_Walk/4.png";
-        walkArray[5] = "assets/Kirby_Animation_Frames/Kirby_Walk/5.png";
-        walkArray[6] = "assets/Kirby_Animation_Frames/Kirby_Walk/6.png";
-        walkArray[7] = "assets/Kirby_Animation_Frames/Kirby_Walk/7.png";
-        walkArray[8] = "assets/Kirby_Animation_Frames/Kirby_Walk/8.png";
-        walkArray[9] = "assets/Kirby_Animation_Frames/Kirby_Walk/9.png";
+        walkArray[0] = "assets/kirby_animation_frames/Kirby_Walk/0.png";
+        walkArray[1] = "assets/kirby_animation_frames/Kirby_Walk/1.png";
+        walkArray[2] = "assets/kirby_animation_frames/Kirby_Walk/2.png";
+        walkArray[3] = "assets/kirby_animation_frames/Kirby_Walk/3.png";
+        walkArray[4] = "assets/kirby_animation_frames/Kirby_Walk/4.png";
+        walkArray[5] = "assets/kirby_animation_frames/Kirby_Walk/5.png";
+        walkArray[6] = "assets/kirby_animation_frames/Kirby_Walk/6.png";
+        walkArray[7] = "assets/kirby_animation_frames/Kirby_Walk/7.png";
+        walkArray[8] = "assets/kirby_animation_frames/Kirby_Walk/8.png";
+        walkArray[9] = "assets/kirby_animation_frames/Kirby_Walk/9.png";
     } else if (kirby == "suck") {
         console.log("load suck");
         walkArray = new Array();
-        walkArray[0] = "assets/Kirby_Animation_Frames/kirby_suck/0.png";
-        walkArray[1] = "assets/Kirby_Animation_Frames/kirby_suck/1.png";
-        walkArray[2] = "assets/Kirby_Animation_Frames/kirby_suck/2.png";
-        walkArray[3] = "assets/Kirby_Animation_Frames/kirby_suck/3.png";
-        walkArray[4] = "assets/Kirby_Animation_Frames/kirby_suck/4.png";
+        walkArray[0] = "assets/kirby_animation_frames/kirby_suck/0.png";
+        walkArray[1] = "assets/kirby_animation_frames/kirby_suck/1.png";
+        walkArray[2] = "assets/kirby_animation_frames/kirby_suck/2.png";
+        walkArray[3] = "assets/kirby_animation_frames/kirby_suck/3.png";
+        walkArray[4] = "assets/kirby_animation_frames/kirby_suck/4.png";
         wKirbyFrame = 0;
     }
 }
@@ -244,6 +239,11 @@ function landItem(time) {
 
 // Updates mirror with new meme
 function updateMirror() {
+    var newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    while (currentmeme == newrandommeme) {
+        newrandommeme = memearray[Math.floor(Math.random() * memearray.length)];
+    }
+    currentmeme = newrandommeme;
 
 }
 
