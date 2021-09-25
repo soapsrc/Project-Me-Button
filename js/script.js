@@ -185,10 +185,7 @@ function drawKirby() {
     if (wKirbyFrame > walkArray.length - 1) {
         // If Kirby is already sucking, default normal_kirby_walk sprites saved into walkArray
         if (isSuck) {
-            console.log("isSuck = false");
-            //loadArray("fire");
             loadArray(kirbyFileUtility()+walkSuffix);
-
             isSuck = false;
             itemY += 5;
         }
@@ -203,7 +200,6 @@ function drawKirby() {
  */
 function loadArray(kirby) {
     if (!kirby.includes("suck")) {
-        console.log("load default");  
         walkArray = 
         [
             "assets/kirby_animation_frames/"+kirby+"/0.png",
@@ -218,7 +214,6 @@ function loadArray(kirby) {
             "assets/kirby_animation_frames/"+kirby+"/9.png"
         ];        
     } else {
-        console.log("load suck");
         walkArray = new Array();
         walkArray = 
         [
@@ -250,9 +245,7 @@ function checkCollision() {
         itemLanded = false;
         resetItem();
     } else if (itemX <= ckirby.width * 2 + 35 && !isSuck) {
-        console.log("isSuck = true");
         isSuck = true;
-        //kirbyTransform();
         loadArray(kirbyFileUtility()+suckSuffix);
         if(itemType === tomato){
             updateMirror();
