@@ -305,7 +305,6 @@ function checkCollision() {
         // Play poyo sound effect after food has been inhaled
         if(foodArray.includes(itemType)){
             setTimeout(() => {
-                console.log("Food item released");
                 poyoSound = new loadSound(poyoArray[Math.floor(Math.random() * poyoArray.length)]);
                 poyoSound.play();
             }, 500);

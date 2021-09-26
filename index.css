@@ -1,0 +1,21 @@
+.root {
+    position: relative;
+}
+
+.canvasDiv, .intro {
+    position: absolute;
+}
+
+.intro {
+    margin: 0;
+    padding: 0;
+    background-color: #EBE0E7;
+    display: block;
+    z-index: 9999;
+    width: 700px;
+    height: 350px;
+    text-align: center;
+    border: solid #EACAE0;
+    border-width: 15px;
+    border-radius: 50px;
+}
