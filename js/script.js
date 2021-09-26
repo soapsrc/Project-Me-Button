@@ -4,11 +4,16 @@ var bg = new Image();
 var pf = new Image();
 // Walking Kirby
 var wkirby = new Image();
+// Array holding all walking animation frames
 var walkArray = [];
+// Array holding all chef Kirby animation frames
+var chefArray = [];
 // Meme tomato
 var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
+// Toggle music Button
+var musicButton = new Image();
 // Item display boolean
 var showItem = false;
 // Item has landed on grass platform boolean
@@ -17,23 +22,29 @@ var itemLanded = false;
 var isSuck = false;
 // Item type variable (tomato, sword, fire, ice, etc.)
 var itemType;
-
-// Declare variables
-var speed = 0.7; // FrameRate - lower is faster
-var scale = 1.05; // Scale of the platform image
-var dx = -0.75; // Offset of pfX
 var ctx; // Canvas context
 canvas.width = 800;
 canvas.height = 451;
 var pfX = 0; // X coordinate of scrolling platform
 var pfY = canvas.height - 90; // Y coordiante of scrolling platform
 var delayCount = 1; // Delay count of Walking Kirby and Chef Kirby
-var wKirbyFrame = 1; // Current frame of Walking Kirby and Chef Kerby animation
-var delay = 20; // Animation delay for Walking Kirby and Chef Kirby animation
-var duration = 1500; // Duration of chef -> platform item animation
+var wKirbyFrame = 0; // Current frame of Walking Kirby and Chef Kerby animation
+var cKirbyFrame = 0; // Current frame of Walking Kirby and Chef Kerby animation
 var startTime; // Start time of chef -> platform item animation
-var itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of tomato
-var itemY = 200 + (ckirby.height); // Y coordinate of tomato
+var itemX;
+var itemY;
+var ckirbyX;
+var ckirbyY;
+var wkirbyX = 20;
+var wkirbyY = 290;
+// Assign constant variables
+const speed = 0.7; // FrameRate - lower is faster
+const dx = -0.75; // Offset of pfX
+const delay = 19; // Animation delay for Walking Kirby and Chef Kirby animation
+const duration = 1500; // Duration of chef -> platform item animation
+const musicX = canvas.width - 80; // X coordinate of musicButton
+const musicY = canvas.height - 65; // Y coordinate of musicButton
+const wkirbyScale = 4;
 const walkSuffix = "_walk";
 const suckSuffix = "_suck";
 
@@ -63,7 +74,13 @@ function init() {
     wkirby.src = "assets/kirby_animation_frames/normal_kirby_walk/0.png";
     tomato.src = "assets/mtomato.png";
     ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif";
-    loadArray("normal_kirby"+walkSuffix);
+    musicButton.src = "assets/musicnote.gif";
+    ckirbyX = canvas.width / 3;
+    ckirbyY = 200;
+    // Set item position to where chef Kirby's pot is
+    resetItem();
+
+    loadArray("normal_kirby" + walkSuffix);
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
@@ -92,15 +109,15 @@ function init() {
  * Used when referencing files names based on item types
  * @returns string to be appended with file path
  */
-function kirbyFileUtility(){
-    switch(itemType){
+function kirbyFileUtility() {
+    switch (itemType) {
         case fire:
             return "fire_kirby";
         case ice:
             return "ice_kirby";
-        case mirror: 
+        case mirror:
             return "mirror_kirby";
-        case painter: 
+        case painter:
             return "painter_kirby";
         case sword:
             return "sword_kirby";
@@ -120,13 +137,14 @@ function draw() {
     // Draw scrolling platform
     drawPlatform();
     // Draw meme mirror
-    drawMirror();
+    //drawMirror();
     // Check if Kirby collided with item
     checkCollision();
     // Check if item landed on grass platform
     if (itemLanded) drawItem(itemType);
     //  Draw Kirby
     drawKirby();
+    drawButtons();
 }
 function scaleToFill(img){
     // get the scale
@@ -166,6 +184,7 @@ function drawPlatform() {
     // Distance x-coordinate of platform is moved
     pfX += dx;
 }
+
 /**
  * Returns None
  * Draws meme mirror using currentmeme image
@@ -180,25 +199,30 @@ function drawMirror() {
  * Draws chef Kirby and walking Kirby
  */
 function drawKirby() {
+    wkirbyY = 375 - (wkirby.height * 4); //Adjust y coordinate of walking Kirby vector to its height
     // Draw walking Kirby and chef Kirby
-    ctx.drawImage(wkirby, 20, 361 - (wkirby.height * 3.5), wkirby.width * 4, wkirby.height * 4);
-    ctx.drawImage(ckirby, canvas.width / 2.5 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    ctx.drawImage(wkirby, wkirbyX, wkirbyY, wkirby.width * 4, wkirby.height * 4);
+    ctx.drawImage(ckirby, ckirbyX, ckirbyY, ckirby.width, ckirby.height);
     // Must delay Kirbys animation or else it will be too fast
     if (delayCount % delay == 0) { // Only animate Kirbys when delayCount % delay == 0
         wkirby.src = walkArray[wKirbyFrame];
-        ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby" + wKirbyFrame + ".gif";
-        wKirbyFrame++; // Update Kirby frame
+        ckirby.src = chefArray[cKirbyFrame];
+        wKirbyFrame++; // Update walking Kirby frame
+        cKirbyFrame++; // Update chef Kirby frame
     }
-    // delayCount range = [1,delay * totalnumber of frames]
+    // delayCount range is [1,delay * totalnumber of frames]
     if (delayCount < delay * walkArray.length) delayCount++;
     else delayCount = 1;
-    // Last animation frame
+    // Restart animation if current frame is last frame of chef Kirby animation
+    if (cKirbyFrame == chefArray.length) {
+        cKirbyFrame = 0; // Restart animation
+    }
+    // Last walking Kirby animation frame
     if (wKirbyFrame > walkArray.length - 1) {
-        // If Kirby is already sucking, default normal_kirby_walk sprites saved into walkArray
+        // If Kirby is already sucking, walking sprites are loaded into walkArray
         if (isSuck) {
-            loadArray(kirbyFileUtility()+walkSuffix);
+            loadArray(kirbyFileUtility() + walkSuffix);
             isSuck = false;
-            itemY += 5;
         }
         // If Kirby is not sucking and is just walking, reset frame number to restart animation
         wKirbyFrame = 0;
@@ -211,30 +235,38 @@ function drawKirby() {
  */
 function loadArray(kirby) {
     if (!kirby.includes("suck")) {
-        walkArray = 
-        [
-            "assets/kirby_animation_frames/"+kirby+"/0.png",
-            "assets/kirby_animation_frames/"+kirby+"/1.png",
-            "assets/kirby_animation_frames/"+kirby+"/2.png",
-            "assets/kirby_animation_frames/"+kirby+"/3.png",
-            "assets/kirby_animation_frames/"+kirby+"/4.png",
-            "assets/kirby_animation_frames/"+kirby+"/5.png",
-            "assets/kirby_animation_frames/"+kirby+"/6.png",
-            "assets/kirby_animation_frames/"+kirby+"/7.png",
-            "assets/kirby_animation_frames/"+kirby+"/8.png",
-            "assets/kirby_animation_frames/"+kirby+"/9.png"
-        ];        
+        walkArray = [
+            "assets/kirby_animation_frames/" + kirby + "/0.png",
+            "assets/kirby_animation_frames/" + kirby + "/1.png",
+            "assets/kirby_animation_frames/" + kirby + "/2.png",
+            "assets/kirby_animation_frames/" + kirby + "/3.png",
+            "assets/kirby_animation_frames/" + kirby + "/4.png",
+            "assets/kirby_animation_frames/" + kirby + "/5.png",
+            "assets/kirby_animation_frames/" + kirby + "/6.png",
+            "assets/kirby_animation_frames/" + kirby + "/7.png",
+            "assets/kirby_animation_frames/" + kirby + "/8.png",
+            "assets/kirby_animation_frames/" + kirby + "/9.png"
+        ];
+    } else if (kirby == "chef_kirby") {
+        const chef_kirby_frames = 17;
+        for (i = 0; i < chef_kirby_frames; i++) {
+            chefArray[i] = "assets/kirby_animation_frames/chef_kirby/ckirby" + i + ".gif";
+        }
     } else {
         walkArray = new Array();
-        walkArray = 
-        [
-            "assets/kirby_animation_frames/"+kirby+"/0.png",
-            "assets/kirby_animation_frames/"+kirby+"/1.png",
-            "assets/kirby_animation_frames/"+kirby+"/2.png",
-            "assets/kirby_animation_frames/"+kirby+"/3.png",
-            "assets/kirby_animation_frames/"+kirby+"/4.png"
+        walkArray = [
+            "assets/kirby_animation_frames/" + kirby + "/0.png",
+            "assets/kirby_animation_frames/" + kirby + "/1.png",
+            "assets/kirby_animation_frames/" + kirby + "/2.png",
+            "assets/kirby_animation_frames/" + kirby + "/3.png",
+            "assets/kirby_animation_frames/" + kirby + "/4.png"
         ];
         wKirbyFrame = 0;
+    }
+
+    const chef_kirby_frames = 17;
+    for (i = 0; i < chef_kirby_frames; i++) {
+        chefArray[i] = "assets/kirby_animation_frames/chef_kirby/ckirby" + i + ".gif";
     }
 }
 
@@ -243,22 +275,27 @@ function loadArray(kirby) {
  * Resets current item position back to beside chef's Kirby pot
  */
 function resetItem() {
-    itemX = (canvas.width / 2.5) + ckirby.width; // X coordinate of item
-    itemY = 200 + (ckirby.height); // Y coordinate of item
+    itemX = ckirbyX + 10; // X coordinate of item
+    itemY = ckirbyY + 20; // Y coordinate of item
+    console.log("RESET ckirby.width " + ckirby.width + " ckirby.height" + ckirby.height);
+
 }
 /**
  * Returns None
  * Checks if Kirby has collided with current item (only one item can be called at a time or function will not work)
  */
 function checkCollision() {
-    if (itemX <= ckirby.width * 2) {
+    // Check if item is behind Kirby
+    if (itemX <= wkirbyX + (wkirby.width * wkirbyScale) - 10) {
         showItem = false;
         itemLanded = false;
         resetItem();
-    } else if (itemX <= ckirby.width * 2 + 35 && !isSuck) {
+    }
+    // Check if item is in front of Kirby
+    else if (itemX <= wkirbyX + (wkirby.width * wkirbyScale) + 50 && itemX >= wkirbyX + (wkirby.width * wkirbyScale) + 20 && !isSuck) {
         isSuck = true;
-        loadArray(kirbyFileUtility()+suckSuffix);
-        if(itemType === tomato){
+        loadArray(kirbyFileUtility() + suckSuffix);
+        if (itemType === tomato) {
             updateMirror();
         }
         // Play suck sound effect
@@ -279,6 +316,7 @@ function checkCollision() {
 function drawItem() {
     ctx.drawImage(itemType, itemX, itemY);
     itemX += dx
+    if (isSuck) itemY -= 0.3;
 }
 
 /**
@@ -286,10 +324,10 @@ function drawItem() {
  * Moves item from chef Kirby's pot to the end of the scrolling Kirby platform
  * A portion of the following code is from https://stackoverflow.com/questions/43626268/html-canvas-move-circle-from-a-to-b-with-animation
  */
-function landItem(time) {
+function dropItem(time) {
     // Coordinates of where we want the item to land (end of grass platform)
     var landX = canvas.width - 50;
-    var landY = 335;
+    var landY = 370 - itemType.height;
     if (!startTime) // Check if first frame
         startTime = time || performance.now(); // Update startTime
 
@@ -298,8 +336,8 @@ function landItem(time) {
 
     // currentPos = previous position + (difference * deltaTime)
     // Move tomato to next 
-    var currentX = itemX + ((canvas.width - 50 - itemX) * deltaTime);
-    var currentY = itemY + ((335 - itemY) * deltaTime);
+    var currentX = itemX + ((landX - itemX) * deltaTime);
+    var currentY = itemY + ((landY - itemY) * deltaTime);
 
     if (deltaTime >= 1) { // Animation (pot -> platform) has finished
         // Update x-coordiantes to where item landed
@@ -310,7 +348,7 @@ function landItem(time) {
         itemLanded = true;
     } else { // Animation (pot -> platform) has not finished yet
         ctx.drawImage(itemType, currentX, currentY);
-        requestAnimationFrame(landItem); // Continue with animation
+        requestAnimationFrame(dropItem); // Continue with animation
     }
 }
 
@@ -345,7 +383,7 @@ var clickTimer
  * Returns None
  * Handles single click on chef Kirby by triggering copy item animation and moving it from pot -> platform 
  */
-function onSingleClick(e){
+function onSingleClick(e) {
     if (e.detail === 1) {
         clickTimer = setTimeout(() => {
             releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
@@ -367,24 +405,31 @@ function onDoubleClick(e) {
  * @param {*} e, event handler that looks for pointer down to call function 
  */
 function onPointerDown(e) {
-        clickTimer = setTimeout(() => {
-            releaseItem(foodArray[Math.floor(Math.random() * foodArray.length)], e);
-        }, 400)
+    clickTimer = setTimeout(() => {
+        releaseItem(foodArray[Math.floor(Math.random() * foodArray.length)], e);
+    }, 400)
 }
 
 function releaseItem(releaseItemType, e) {
     // If mouse coordinates is within chef Kirby image
-    if (e.pageX > canvas.width / 2.5 - ckirby.width && e.pageX < (canvas.width / 2) + ckirby.width &&
-        e.pageY > 200 && e.pageY < 200 + (ckirby.height * 2)) {
+    if (e.pageX > ckirbyX && e.pageX < ckirbyX + (ckirby.width) &&
+        e.pageY > ckirbyY && e.pageY < ckirbyY + (ckirby.height)) {
         // If an item is not already being drawn then draw item and animate it moving from pot -> platform
         if (!showItem) {
             showItem = true;
             itemType = releaseItemType;
-            landItem();
+            dropItem();
         }
     }
 }
 
+/**
+ * Returns None
+ * Draws background music toggle button
+ */
+function drawButtons() {
+    ctx.drawImage(musicButton, musicX, musicY);
+}
 /**
  * Returns None
  * Parameters: path - relative path of mp3 file
