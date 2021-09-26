@@ -49,3 +49,6 @@ var poyo4 = "assets/audio/poyo4.mp3";
 var poyo5 = "assets/audio/poyo5.mp3";
 var poyoArray = [poyo1, poyo2, poyo3, poyo4, poyo5];
 
+// Background Source Array
+const bgArray = [];
+
