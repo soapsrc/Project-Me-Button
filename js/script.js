@@ -301,21 +301,27 @@ function landItem(time) {
 }
 
 /**
+ * Generates random numbers to be utilized for array indices
+ * @param {*} arr the array to be randomly accessed
+ * @param {*} compareItem the current item to ensure no two items are outputted consecutively
+ * @param {*} beforeStartIndex one less than the start index of the subarray to access
+ * @returns a random number that serves as the index to randomly access an array
+ */
+function randomNumberGenerator(arr, compareItem, beforeStartIndex) {
+    var index = Math.floor(Math.random() * arr.length);
+    while(compareItem === arr[index] || index === beforeStartIndex) {
+        index = Math.floor(Math.random() * arr.length);
+    }
+    return index;
+}
+
+/**
  * Returns None
  * updates currentmeme to a random Kirby meme image
  */
 function updateMirror() {
-    // Produce random array index number for memeArray
-    let arrayIndex = Math.floor(Math.random() * memeArray.length);
-    // Set newrandommeme to memeArray[arrayIndex]
-    var newrandommeme = memeArray[arrayIndex];
-    // If newrandommeme is the same as previous meme or if arrayIndex == 0 then randomize arrayIndex again
-    while (currentmeme === newrandommeme || arrayIndex == 0) {
-        arrayIndex = Math.floor(Math.random() * memeArray.length);
-        newrandommeme = memeArray[arrayIndex];
-    }
     // Update  currentmeme
-    currentmeme = newrandommeme;
+    currentmeme = memeArray[randomNumberGenerator(memeArray, currentmeme, 0)];
 }
 
 // Handle single and double clicks
@@ -327,12 +333,8 @@ var clickTimer
  */
 function onSingleClick(e){
     if (e.detail === 1) {
-        var copyItemsIndex = Math.floor(Math.random() * copyItemsArray.length);
         clickTimer = setTimeout(() => {
-            while(copyItemsArray[copyItemsIndex] === itemType) {
-                copyItemsIndex = Math.floor(Math.random() * copyItemsArray.length);
-            }
-            releaseItem(copyItemsArray[copyItemsIndex], e);
+            releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
         }, 200)
     }
 }
