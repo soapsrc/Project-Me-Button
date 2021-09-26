@@ -51,6 +51,7 @@ function include(file) {
 }
 // Import rss.js
 include('js/rss.js');
+
 /**
  * Returns None
  * Canvas setup
@@ -68,6 +69,7 @@ function init() {
     ctx = document.getElementById('canvas').getContext('2d');
     document.getElementById('canvas').addEventListener("click", onSingleClick, false);
     document.getElementById('canvas').addEventListener("dblclick", onDoubleClick, false);
+    document.getElementById('canvas').addEventListener("pointerdown", onPointerDown, false);
 
     // Load background image
     bg.onload = function() {
@@ -338,6 +340,16 @@ function onSingleClick(e){
 function onDoubleClick(e) {
     clearTimeout(clickTimer)
     releaseItem(tomato, e);
+}
+
+/**
+ * Returns None
+ * @param {*} e, event handler that looks for pointer down to call function 
+ */
+function onPointerDown(e) {
+        clickTimer = setTimeout(() => {
+            releaseItem(foodArray[Math.floor(Math.random() * foodArray.length)], e);
+        }, 400)
 }
 
 function releaseItem(releaseItemType, e) {
