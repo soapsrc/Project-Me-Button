@@ -282,7 +282,7 @@ function checkCollision() {
             updateMirror();
         }
         // Play suck sound effect
-        suckSound = new loadSound("assets/audio/kirbysuck.mp3");
+        let suckSound = new loadSound("assets/audio/kirbysuck.mp3");
         suckSound.play();
         if (foodArray.includes(itemType)) {
             console.log("Food item released");
@@ -367,11 +367,16 @@ var clickTimer
  * Handles single click on chef Kirby by triggering copy item animation and moving it from pot -> platform 
  */
 function onSingleClick(e) {
-    if (e.detail === 1) {
-        clickTimer = setTimeout(() => {
-            releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
-        }, 200)
-    }
+
+    clickTimer = setTimeout(() => {
+        releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
+        if (e.pageX > musicX && e.pageX < musicX + musicButton.width &&
+            e.pageY > musicY && e.pageY < musicY + musicButton.height) {
+            let bgMusic = new loadSound("assets/audio/greengreens.mp3");
+            bgMusic.play();
+        }
+    }, 200)
+
 }
 
 /**
