@@ -132,7 +132,8 @@ function kirbyFileUtility() {
  */
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
-    scaleToFit(bg);
+    scaleToFill(bg);
+    // scaleToFit(bg);
     // Draw scrolling platform
     drawPlatform();
     // Draw meme mirror
@@ -144,6 +145,14 @@ function draw() {
     //  Draw Kirby
     drawKirby();
     drawButtons();
+}
+function scaleToFill(img){
+    // get the scale
+    var scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+    // get the top left position of the image
+    var x = (canvas.width / 2) - (img.width / 2) * scale;
+    var y = (canvas.height / 2) - (img.height / 2) * scale;
+    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
 }
 /**
  * Returns None
@@ -338,25 +347,31 @@ function dropItem(time) {
 }
 
 /**
+ * Generates random numbers to be utilized for array indices
+ * @param {*} arr the array to be randomly accessed
+ * @param {*} compareItem the current item to ensure no two items are outputted consecutively
+ * @param {*} beforeStartIndex one less than the start index of the subarray to access
+ * @returns a random number that serves as the index to randomly access an array
+ */
+function randomNumberGenerator(arr, compareItem, beforeStartIndex) {
+    var index = Math.floor(Math.random() * arr.length);
+    while(compareItem === arr[index] || index === beforeStartIndex) {
+        index = Math.floor(Math.random() * arr.length);
+    }
+    return index;
+}
+
+/**
  * Returns None
  * updates currentmeme to a random Kirby meme image
  */
 function updateMirror() {
-    // Produce random array index number for memeArray
-    let arrayIndex = Math.floor(Math.random() * memeArray.length);
-    // Set newrandommeme to memeArray[arrayIndex]
-    var newrandommeme = memeArray[arrayIndex];
-    // If newrandommeme is the same as previous meme or if arrayIndex == 0 then randomize arrayIndex again
-    while (currentmeme === newrandommeme || arrayIndex == 0) {
-        arrayIndex = Math.floor(Math.random() * memeArray.length);
-        newrandommeme = memeArray[arrayIndex];
-    }
     // Update  currentmeme
-    currentmeme = newrandommeme;
+    currentmeme = memeArray[randomNumberGenerator(memeArray, currentmeme, 0)];
 }
 
 // Handle single and double clicks
-let clickTimer
+var clickTimer
 
 /**
  * Returns None
@@ -365,7 +380,7 @@ let clickTimer
 function onSingleClick(e) {
     if (e.detail === 1) {
         clickTimer = setTimeout(() => {
-            releaseItem(copyItemsArray[Math.floor(Math.random() * copyItemsArray.length)], e);
+            releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
         }, 200)
     }
 }
