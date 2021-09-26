@@ -58,7 +58,7 @@ include('js/rss.js');
  */
 function init() {
     // Load images
-    bg.src = "assets/kirbydreamland.jpeg";
+    bg.src = "assets/kirby_animation_frames/kirby_bg/stars3.png";
     pf.src = "assets/grasstile.png";
     wkirby.src = "assets/kirby_animation_frames/normal_kirby_walk/0.png";
     tomato.src = "assets/mtomato.png";
@@ -115,7 +115,8 @@ function kirbyFileUtility(){
  */
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
-    scaleToFit(bg);
+    scaleToFill(bg);
+    // scaleToFit(bg);
     // Draw scrolling platform
     drawPlatform();
     // Draw meme mirror
@@ -126,6 +127,14 @@ function draw() {
     if (itemLanded) drawItem(itemType);
     //  Draw Kirby
     drawKirby();
+}
+function scaleToFill(img){
+    // get the scale
+    var scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+    // get the top left position of the image
+    var x = (canvas.width / 2) - (img.width / 2) * scale;
+    var y = (canvas.height / 2) - (img.height / 2) * scale;
+    ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
 }
 /**
  * Returns None
