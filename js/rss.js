@@ -41,6 +41,14 @@ food3.src = "assets/kirby_animation_frames/food/3.png";
 food4.src = "assets/kirby_animation_frames/food/4.png";
 // Food Array
 var foodArray = [food0, food1, food2, food3, food4];
+// Poyo
+var poyo1 = "assets/audio/poyo1.mp3";
+var poyo2 = "assets/audio/poyo2.mp3";
+var poyo3 = "assets/audio/poyo3.mp3";
+var poyo4 = "assets/audio/poyo4.mp3";
+var poyo5 = "assets/audio/poyo5.mp3";
+var poyoArray = [poyo1, poyo2, poyo3, poyo4, poyo5];
+
 // Background Source Array
 const bgArray = [];
 

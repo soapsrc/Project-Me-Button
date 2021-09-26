@@ -301,6 +301,11 @@ function checkCollision() {
         // Play suck sound effect
         suckSound = new loadSound("assets/audio/kirbysuck.mp3");
         suckSound.play();
+        if(foodArray.includes(itemType)){
+            console.log("Food item released");
+            poyoSound = new loadSound(poyoArray[Math.floor(Math.random() * poyoArray.length)]);
+            poyoSound.play();
+        }
     }
 }
 
