@@ -319,7 +319,7 @@ function updateMirror() {
 }
 
 // Handle single and double clicks
-let clickTimer
+var clickTimer
 
 /**
  * Returns None
@@ -327,8 +327,12 @@ let clickTimer
  */
 function onSingleClick(e){
     if (e.detail === 1) {
+        var copyItemsIndex = Math.floor(Math.random() * copyItemsArray.length);
         clickTimer = setTimeout(() => {
-            releaseItem(copyItemsArray[Math.floor(Math.random() * copyItemsArray.length)], e);
+            while(copyItemsArray[copyItemsIndex] === itemType) {
+                copyItemsIndex = Math.floor(Math.random() * copyItemsArray.length);
+            }
+            releaseItem(copyItemsArray[copyItemsIndex], e);
         }, 200)
     }
 }
