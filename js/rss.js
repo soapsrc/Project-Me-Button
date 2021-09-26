@@ -41,4 +41,6 @@ food3.src = "assets/kirby_animation_frames/food/3.png";
 food4.src = "assets/kirby_animation_frames/food/4.png";
 // Food Array
 var foodArray = [food0, food1, food2, food3, food4];
+// Background Source Array
+const bgArray = [];
 
