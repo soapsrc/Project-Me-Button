@@ -184,6 +184,7 @@ function drawPlatform() {
     // Distance x-coordinate of platform is moved
     pfX += dx;
 }
+
 /**
  * Returns None
  * Draws meme mirror using currentmeme image
