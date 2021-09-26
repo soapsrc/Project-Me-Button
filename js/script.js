@@ -81,6 +81,7 @@ function init() {
     resetItem();
 
     loadArray("normal_kirby" + walkSuffix);
+    loadArray("chef_kirby");
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
@@ -146,7 +147,8 @@ function draw() {
     drawKirby();
     drawButtons();
 }
-function scaleToFill(img){
+
+function scaleToFill(img) {
     // get the scale
     var scale = Math.max(canvas.width / img.width, canvas.height / img.height);
     // get the top left position of the image
@@ -234,39 +236,21 @@ function drawKirby() {
  * Manually loads image into image array
  */
 function loadArray(kirby) {
-    if (!kirby.includes("suck")) {
-        walkArray = [
-            "assets/kirby_animation_frames/" + kirby + "/0.png",
-            "assets/kirby_animation_frames/" + kirby + "/1.png",
-            "assets/kirby_animation_frames/" + kirby + "/2.png",
-            "assets/kirby_animation_frames/" + kirby + "/3.png",
-            "assets/kirby_animation_frames/" + kirby + "/4.png",
-            "assets/kirby_animation_frames/" + kirby + "/5.png",
-            "assets/kirby_animation_frames/" + kirby + "/6.png",
-            "assets/kirby_animation_frames/" + kirby + "/7.png",
-            "assets/kirby_animation_frames/" + kirby + "/8.png",
-            "assets/kirby_animation_frames/" + kirby + "/9.png"
-        ];
-    } else if (kirby == "chef_kirby") {
+    if (kirby == "chef_kirby") {
         const chef_kirby_frames = 17;
         for (i = 0; i < chef_kirby_frames; i++) {
             chefArray[i] = "assets/kirby_animation_frames/chef_kirby/ckirby" + i + ".gif";
         }
     } else {
-        walkArray = new Array();
-        walkArray = [
-            "assets/kirby_animation_frames/" + kirby + "/0.png",
-            "assets/kirby_animation_frames/" + kirby + "/1.png",
-            "assets/kirby_animation_frames/" + kirby + "/2.png",
-            "assets/kirby_animation_frames/" + kirby + "/3.png",
-            "assets/kirby_animation_frames/" + kirby + "/4.png"
-        ];
-        wKirbyFrame = 0;
-    }
-
-    const chef_kirby_frames = 17;
-    for (i = 0; i < chef_kirby_frames; i++) {
-        chefArray[i] = "assets/kirby_animation_frames/chef_kirby/ckirby" + i + ".gif";
+        var walk_kirby_frames = 10;
+        if (kirby.includes("suck")) {
+            walkArray = new Array();
+            wKirbyFrame = 0;
+            walk_kirby_frames = 5;
+        }
+        for (i = 0; i < walk_kirby_frames; i++) {
+            walkArray[i] = "assets/kirby_animation_frames/" + kirby + "/" + i + ".png";
+        }
     }
 }
 
@@ -277,7 +261,6 @@ function loadArray(kirby) {
 function resetItem() {
     itemX = ckirbyX + 10; // X coordinate of item
     itemY = ckirbyY + 20; // Y coordinate of item
-    console.log("RESET ckirby.width " + ckirby.width + " ckirby.height" + ckirby.height);
 
 }
 /**
@@ -301,7 +284,7 @@ function checkCollision() {
         // Play suck sound effect
         suckSound = new loadSound("assets/audio/kirbysuck.mp3");
         suckSound.play();
-        if(foodArray.includes(itemType)){
+        if (foodArray.includes(itemType)) {
             console.log("Food item released");
             poyoSound = new loadSound(poyoArray[Math.floor(Math.random() * poyoArray.length)]);
             poyoSound.play();
@@ -361,7 +344,7 @@ function dropItem(time) {
  */
 function randomNumberGenerator(arr, compareItem, beforeStartIndex) {
     var index = Math.floor(Math.random() * arr.length);
-    while(compareItem === arr[index] || index === beforeStartIndex) {
+    while (compareItem === arr[index] || index === beforeStartIndex) {
         index = Math.floor(Math.random() * arr.length);
     }
     return index;
