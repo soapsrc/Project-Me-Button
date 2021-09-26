@@ -58,7 +58,7 @@ include('js/rss.js');
  */
 function init() {
     // Load images
-    bg.src = "assets/kirby_animation_frames/kirby_bg/stars3.png";
+    bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png";
     wkirby.src = "assets/kirby_animation_frames/normal_kirby_walk/0.png";
     tomato.src = "assets/mtomato.png";
