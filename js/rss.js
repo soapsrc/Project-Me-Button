@@ -26,3 +26,19 @@ painter.src = "assets/Kirby_Animation_Frames/copy_abilities/4.png";
 sword.src = "assets/Kirby_Animation_Frames/copy_abilities/0.png";
 // Copy Items Array
 var copyItemsArray = [fire, ice, mirror, painter, sword];
+
+// Food
+var food0 = new Image();
+var food1 = new Image();
+var food2 = new Image();
+var food3 = new Image();
+var food4 = new Image();
+// Load food images
+food0.src = "assets/kirby_animation_frames/food/0.png";
+food1.src = "assets/kirby_animation_frames/food/1.png";
+food2.src = "assets/kirby_animation_frames/food/2.png";
+food3.src = "assets/kirby_animation_frames/food/3.png";
+food4.src = "assets/kirby_animation_frames/food/4.png";
+// Food Array
+var foodArray = [food0, food1, food2, food3, food4];
+
