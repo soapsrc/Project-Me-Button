@@ -37,6 +37,7 @@ var ckirbyX;
 var ckirbyY;
 var wkirbyX = 20;
 var wkirbyY = 290;
+var bgMusic;
 // Assign constant variables
 const speed = 0.7; // FrameRate - lower is faster
 const dx = -0.75; // Offset of pfX
@@ -82,6 +83,8 @@ function init() {
 
     loadArray("normal_kirby" + walkSuffix);
     loadArray("chef_kirby");
+
+    bgMusic = new loadSound("assets/audio/greengreenslong.mp3");
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
@@ -372,8 +375,12 @@ function onSingleClick(e) {
         releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
         if (e.pageX > musicX && e.pageX < musicX + musicButton.width &&
             e.pageY > musicY && e.pageY < musicY + musicButton.height) {
-            let bgMusic = new loadSound("assets/audio/greengreens.mp3");
-            bgMusic.play();
+            console.log(bgMusic.paused());
+            if (bgMusic.paused())
+                bgMusic.play();
+            else {
+                bgMusic.stop();
+            }
         }
     }, 200)
 
@@ -417,6 +424,14 @@ function releaseItem(releaseItemType, e) {
  */
 function drawButtons() {
     ctx.drawImage(musicButton, musicX, musicY);
+    if (bgMusic.paused()) {
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#bee1e6';
+        ctx.beginPath();
+        ctx.moveTo(musicX, musicY);
+        ctx.lineTo(musicX + musicButton.width, musicY + musicButton.height);
+        ctx.stroke();
+    }
 }
 /**
  * Returns None
@@ -430,6 +445,9 @@ function loadSound(path) {
     }
     this.stop = function() {
         audio.pause();
+    }
+    this.paused = function() {
+        return audio.paused;
     }
 }
 
