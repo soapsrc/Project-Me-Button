@@ -8,12 +8,8 @@ var wkirby = new Image();
 var walkArray = [];
 // Array holding all chef Kirby animation frames
 var chefArray = [];
-// Meme tomato
-var tomato = new Image();
 // Chef Kirby
 var ckirby = new Image();
-// Toggle music Button
-var musicButton = new Image();
 // Item display boolean
 var showItem = false;
 // Item has landed on grass platform boolean
@@ -35,10 +31,22 @@ var itemX;
 var itemY;
 var ckirbyX;
 var ckirbyY;
-var wkirbyX = 20;
-var wkirbyY = 290;
+var wkirbyX;
+var wkirbyY;
+var mirrorX;
+var mirrorY;
 var bgMusic;
 // Assign constant variables
+// Toggle music Button
+const musicButton = new Image();
+// Meme tomato
+const tomato = new Image();
+const normal_bg = "assets/kirby_animation_frames/kirby_bg/normal.png";
+const fire_bg = "assets/kirby_animation_frames/kirby_bg/fire.png";
+const ice_bg = "assets/kirby_animation_frames/kirby_bg/ice.png";
+const mirror_bg = "assets/kirby_animation_frames/kirby_bg/mirror.png";
+const paint_bg = "assets/kirby_animation_frames/kirby_bg/paint.png";
+const sword_bg = "assets/kirby_animation_frames/kirby_bg/sword.png";
 const speed = 0.7; // FrameRate - lower is faster
 const dx = -0.75; // Offset of pfX
 const delay = 19; // Animation delay for Walking Kirby and Chef Kirby animation
@@ -70,14 +78,20 @@ include('js/rss.js');
  */
 function init() { 
     // Load images
-    bg.src = "assets/kirbydreamland.jpeg";
+    // bg.src = "assets/kirby_animation_frames/kirby_bg/normal.png";
+    bg.src = normal_bg;
     pf.src = "assets/grasstile.png";
     wkirby.src = "assets/kirby_animation_frames/normal_kirby_walk/0.png";
     tomato.src = "assets/mtomato.png";
     ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif";
     musicButton.src = "assets/musicnote.gif";
-    ckirbyX = canvas.width / 3;
-    ckirbyY = 200;
+    // Assign variables
+    ckirbyX = 200;
+    ckirbyY = 30;
+    wkirbyX = 20;
+    wkirbyY = 290;
+    mirrorX = canvas.width / 2 - 50;
+    mirrorY = ckirbyY;
     // Set item position to where chef Kirby's pot is
     resetItem();
 
@@ -97,7 +111,7 @@ function init() {
         document.getElementById("intro").style.display = 'none';
     }, 5000);
 
-    // Get canvas context and add double click event listener
+    // Get canvas context and add event listeners
     ctx = document.getElementById('canvas').getContext('2d');
     document.getElementById('canvas').addEventListener("click", onSingleClick, false);
     document.getElementById('canvas').addEventListener("dblclick", onDoubleClick, false);
@@ -116,7 +130,7 @@ function init() {
 
     // Draw kirby on load
     wkirby.onload = function() {
-        drawKirby();
+        drawKirbys();
     }
 }
 
@@ -127,16 +141,22 @@ function init() {
 function kirbyFileUtility() {
     switch (itemType) {
         case fire:
+            bg.src = fire_bg;
             return "fire_kirby";
         case ice:
+            bg.src = ice_bg;
             return "ice_kirby";
         case mirror:
+            bg.src = mirror_bg;
             return "mirror_kirby";
         case painter:
+            bg.src = paint_bg
             return "painter_kirby";
         case sword:
+            bg.src = sword_bg;
             return "sword_kirby";
         default:
+            bg.src = normal_bg;
             return "normal_kirby";
     }
 }
@@ -148,20 +168,27 @@ function kirbyFileUtility() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
     scaleToFill(bg);
-    // scaleToFit(bg);
     // Draw scrolling platform
     drawPlatform();
     // Draw meme mirror
-    //drawMirror();
+    drawMirror();
     // Check if Kirby collided with item
     checkCollision();
     // Check if item landed on grass platform
     if (itemLanded) drawItem(itemType);
+    // Draw clouds
+    drawClouds();
     //  Draw Kirby
-    drawKirby();
+    drawKirbys();
+    // Draw music toggle button
     drawButtons();
 }
 
+/**
+ * Returns None
+ * Passes an image and scales it to fill the entire canvas
+ * Code is from https://riptutorial.com/html5-canvas/example/19169/scaling-image-to-fit-or-fill-
+ */
 function scaleToFill(img) {
     // get the scale
     var scale = Math.max(canvas.width / img.width, canvas.height / img.height);
@@ -170,9 +197,11 @@ function scaleToFill(img) {
     var y = (canvas.height / 2) - (img.height / 2) * scale;
     ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
 }
+
 /**
  * Returns None
  * Passes an image and scales it to fit the entire canvas
+ * Code is from https://riptutorial.com/html5-canvas/example/19169/scaling-image-to-fit-or-fill-
  */
 function scaleToFit(img) {
     // get the scale
@@ -207,18 +236,52 @@ function drawPlatform() {
  */
 function drawMirror() {
     // Initialize currentmeme to the Meme Mirror
-    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    ctx.drawImage(currentmeme, mirrorX, mirrorY);
+    // Wiggle the mirror so that it looks like it's floating
+    if (delayCount % (delay * 8) == 0) {
+        if (mirrorY >= 35) {
+            mirrorY -= 5;
+        } else mirrorY += 5;
+    }
+}
+
+function drawClouds() {
+    var cloud1 = new Image();
+    var cloud2 = new Image();
+    var cloud3 = new Image();
+    var cloud1_OffsetX = -7;
+    var cloud1_OffsetY = ckirby.height - 25;
+    var cloud2_OffsetX = -25;
+    var cloud2_OffsetY = currentmeme.height - 60;
+    var cloud3_OffsetX = +120;
+    var cloud3_OffsetY = currentmeme.height - 100;
+
+    cloud1.src = "assets/cloud1.png";
+    cloud2.src = "assets/cloud2.png";
+    cloud3.src = "assets/cloud3.png";
+    // Cloud underneath Chef Kirby
+    ctx.drawImage(cloud1, ckirbyX + cloud1_OffsetX, ckirbyY + cloud1_OffsetY);
+    // The two clouds by the meme mirror
+    ctx.drawImage(cloud2, mirrorX + cloud2_OffsetX, mirrorY + cloud2_OffsetY);
+    ctx.drawImage(cloud3, mirrorX + cloud3_OffsetX, mirrorY + cloud3_OffsetY);
+
 }
 
 /**
  * Returns None
  * Draws chef Kirby and walking Kirby
  */
-function drawKirby() {
+function drawKirbys() {
     wkirbyY = 375 - (wkirby.height * 4); //Adjust y coordinate of walking Kirby vector to its height
     // Draw walking Kirby and chef Kirby
     ctx.drawImage(wkirby, wkirbyX, wkirbyY, wkirby.width * 4, wkirby.height * 4);
     ctx.drawImage(ckirby, ckirbyX, ckirbyY, ckirby.width, ckirby.height);
+    // Wiggle chef Kirby so it looks like he's floating
+    if (delayCount % (delay * 8) == 0) {
+        if (ckirbyY >= 35) {
+            ckirbyY -= 5;
+        } else ckirbyY += 5;
+    }
     // Must delay Kirbys animation or else it will be too fast
     if (delayCount % delay == 0) { // Only animate Kirbys when delayCount % delay == 0
         wkirby.src = walkArray[wKirbyFrame];
@@ -282,6 +345,7 @@ function resetItem() {
  * Checks if Kirby has collided with current item (only one item can be called at a time or function will not work)
  */
 function checkCollision() {
+    let is_within_wkirby_boundaries = itemX <= wkirbyX + (wkirby.width * wkirbyScale) + 50 && itemX >= wkirbyX + (wkirby.width * wkirbyScale) + 20;
     // Check if item is behind Kirby
     if (itemX <= wkirbyX + (wkirby.width * wkirbyScale) - 10) {
         showItem = false;
@@ -289,7 +353,7 @@ function checkCollision() {
         resetItem();
     }
     // Check if item is in front of Kirby
-    else if (itemX <= wkirbyX + (wkirby.width * wkirbyScale) + 50 && itemX >= wkirbyX + (wkirby.width * wkirbyScale) + 20 && !isSuck) {
+    else if (is_within_wkirby_boundaries && !isSuck && itemY == 370 - itemType.height) {
         isSuck = true;
         loadArray(kirbyFileUtility() + suckSuffix);
         if (itemType === tomato) {
@@ -300,7 +364,7 @@ function checkCollision() {
         suckSound.play();
 
         // Play poyo sound effect after food has been inhaled
-        if(foodArray.includes(itemType)){
+        if (foodArray.includes(itemType)) {
             setTimeout(() => {
                 poyoSound = new loadSound(poyoArray[Math.floor(Math.random() * poyoArray.length)]);
                 poyoSound.play();
@@ -389,7 +453,6 @@ function onSingleClick(e) {
         releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
         if (e.pageX > musicX && e.pageX < musicX + musicButton.width &&
             e.pageY > musicY && e.pageY < musicY + musicButton.height) {
-            console.log(bgMusic.paused());
             if (bgMusic.paused())
                 bgMusic.play();
             else {
