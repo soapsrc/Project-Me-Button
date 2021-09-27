@@ -4,15 +4,21 @@ var meme1 = new Image();
 var meme2 = new Image();
 var meme3 = new Image();
 var meme4 = new Image();
+var meme5 = new Image();
+var meme6 = new Image();
+var meme7 = new Image();
 // Load meme images
 meme0.src = "assets/kirby_animation_frames/kirby_memes/0.png";
 meme1.src = "assets/kirby_animation_frames/kirby_memes/1.png";
 meme2.src = "assets/kirby_animation_frames/kirby_memes/2.png";
 meme3.src = "assets/kirby_animation_frames/kirby_memes/3.png";
 meme4.src = "assets/kirby_animation_frames/kirby_memes/4.png";
+meme5.src = "assets/kirby_animation_frames/kirby_memes/5.png";
+meme6.src = "assets/kirby_animation_frames/kirby_memes/6.png";
+meme7.src = "assets/kirby_animation_frames/kirby_memes/7.png";
 var currentmeme = meme0;
 // Meme Array
-var memeArray = [meme0, meme1, meme2, meme3, meme4]
+var memeArray = [meme0, meme1, meme2, meme3, meme4, meme5, meme6, meme7];
 
 // Copy Items
 var fire = new Image();
