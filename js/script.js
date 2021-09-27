@@ -35,8 +35,10 @@ var itemX;
 var itemY;
 var ckirbyX;
 var ckirbyY;
-var wkirbyX = 20;
-var wkirbyY = 290;
+var wkirbyX;
+var wkirbyY;
+var mirrorX;
+var mirrorY;
 var bgMusic;
 // Assign constant variables
 const speed = 0.7; // FrameRate - lower is faster
@@ -76,8 +78,13 @@ function init() {
     tomato.src = "assets/mtomato.png";
     ckirby.src = "assets/kirby_animation_frames/chef_kirby/ckirby0.gif";
     musicButton.src = "assets/musicnote.gif";
+    // Assign variables
     ckirbyX = canvas.width / 3;
     ckirbyY = 200;
+    wkirbyX = 20;
+    wkirbyY = 290;
+    mirrorX = canvas.width / 2 - 50;
+    mirrorY = 150;
     // Set item position to where chef Kirby's pot is
     resetItem();
 
@@ -141,7 +148,7 @@ function draw() {
     // Draw scrolling platform
     drawPlatform();
     // Draw meme mirror
-    //drawMirror();
+    drawMirror();
     // Check if Kirby collided with item
     checkCollision();
     // Check if item landed on grass platform
@@ -196,7 +203,7 @@ function drawPlatform() {
  */
 function drawMirror() {
     // Initialize currentmeme to the Meme Mirror
-    ctx.drawImage(currentmeme, canvas.width / 1.89 - ckirby.width, 200, ckirby.width * 2, ckirby.height * 2);
+    ctx.drawImage(currentmeme, mirrorX, mirrorY);
 }
 
 /**
@@ -375,7 +382,6 @@ function onSingleClick(e) {
         releaseItem(copyItemsArray[randomNumberGenerator(copyItemsArray, itemType, -1)], e);
         if (e.pageX > musicX && e.pageX < musicX + musicButton.width &&
             e.pageY > musicY && e.pageY < musicY + musicButton.height) {
-            console.log(bgMusic.paused());
             if (bgMusic.paused())
                 bgMusic.play();
             else {
