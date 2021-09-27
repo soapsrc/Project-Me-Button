@@ -68,7 +68,7 @@ include('js/rss.js');
  * Returns None
  * Canvas setup
  */
-function init() {
+function init() { 
     // Load images
     bg.src = "assets/kirbydreamland.jpeg";
     pf.src = "assets/grasstile.png";
@@ -85,6 +85,17 @@ function init() {
     loadArray("chef_kirby");
 
     bgMusic = new loadSound("assets/audio/greengreenslong.mp3");
+
+    // Clicking outside of intro div hides the div
+    document.onclick = ((e) => {
+        if(e.target.id != 'intro' && document.getElementById('intro').style.display != 'none') {
+            document.getElementById('intro').style.display = 'none';
+        }
+    });
+    // Fade out after 8 seconds
+    setTimeout(function(){
+        document.getElementById("intro").style.display = 'none';
+    }, 5000);
 
     // Get canvas context and add double click event listener
     ctx = document.getElementById('canvas').getContext('2d');
