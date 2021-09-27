@@ -106,10 +106,10 @@ function init() {
             document.getElementById('intro').style.display = 'none';
         }
     });
-    // Fade out after 8 seconds
+    // Fade out after 7 seconds
     setTimeout(function(){
         document.getElementById("intro").style.display = 'none';
-    }, 5000);
+    }, 7000);
 
     // Get canvas context and add event listeners
     ctx = document.getElementById('canvas').getContext('2d');
