@@ -46,7 +46,7 @@ const fire_bg = "assets/kirby_animation_frames/kirby_bg/fire.png";
 const ice_bg = "assets/kirby_animation_frames/kirby_bg/ice.png";
 const mirror_bg = "assets/kirby_animation_frames/kirby_bg/mirror.png";
 const paint_bg = "assets/kirby_animation_frames/kirby_bg/paint.png";
-const sword_bg =  "assets/kirby_animation_frames/kirby_bg/sword.png";
+const sword_bg = "assets/kirby_animation_frames/kirby_bg/sword.png";
 const speed = 0.7; // FrameRate - lower is faster
 const dx = -0.75; // Offset of pfX
 const delay = 19; // Animation delay for Walking Kirby and Chef Kirby animation
@@ -173,6 +173,11 @@ function draw() {
     drawButtons();
 }
 
+/**
+ * Returns None
+ * Passes an image and scales it to fill the entire canvas
+ * Code is from https://riptutorial.com/html5-canvas/example/19169/scaling-image-to-fit-or-fill-
+ */
 function scaleToFill(img) {
     // get the scale
     var scale = Math.max(canvas.width / img.width, canvas.height / img.height);
@@ -181,9 +186,11 @@ function scaleToFill(img) {
     var y = (canvas.height / 2) - (img.height / 2) * scale;
     ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
 }
+
 /**
  * Returns None
  * Passes an image and scales it to fit the entire canvas
+ * Code is from https://riptutorial.com/html5-canvas/example/19169/scaling-image-to-fit-or-fill-
  */
 function scaleToFit(img) {
     // get the scale
@@ -346,7 +353,7 @@ function checkCollision() {
         suckSound.play();
 
         // Play poyo sound effect after food has been inhaled
-        if(foodArray.includes(itemType)){
+        if (foodArray.includes(itemType)) {
             setTimeout(() => {
                 console.log("Food item released");
                 poyoSound = new loadSound(poyoArray[Math.floor(Math.random() * poyoArray.length)]);
