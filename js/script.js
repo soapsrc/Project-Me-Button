@@ -76,7 +76,7 @@ include('js/rss.js');
  * Returns None
  * Canvas setup
  */
-function init() {
+function init() { 
     // Load images
     // bg.src = "assets/kirby_animation_frames/kirby_bg/normal.png";
     bg.src = normal_bg;
@@ -99,6 +99,17 @@ function init() {
     loadArray("chef_kirby");
 
     bgMusic = new loadSound("assets/audio/greengreenslong.mp3");
+
+    // Clicking outside of intro div hides the div
+    document.onclick = ((e) => {
+        if(e.target.id != 'intro' && document.getElementById('intro').style.display != 'none') {
+            document.getElementById('intro').style.display = 'none';
+        }
+    });
+    // Fade out after 7 seconds
+    setTimeout(function(){
+        document.getElementById("intro").style.display = 'none';
+    }, 7000);
 
     // Get canvas context and add event listeners
     ctx = document.getElementById('canvas').getContext('2d');
@@ -355,7 +366,6 @@ function checkCollision() {
         // Play poyo sound effect after food has been inhaled
         if (foodArray.includes(itemType)) {
             setTimeout(() => {
-                console.log("Food item released");
                 poyoSound = new loadSound(poyoArray[Math.floor(Math.random() * poyoArray.length)]);
                 poyoSound.play();
             }, 500);
