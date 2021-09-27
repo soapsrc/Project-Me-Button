@@ -41,6 +41,12 @@ var bgMusic;
 const musicButton = new Image();
 // Meme tomato
 const tomato = new Image();
+const normal_bg = "assets/kirby_animation_frames/kirby_bg/normal.png";
+const fire_bg = "assets/kirby_animation_frames/kirby_bg/fire.png";
+const ice_bg = "assets/kirby_animation_frames/kirby_bg/ice.png";
+const mirror_bg = "assets/kirby_animation_frames/kirby_bg/mirror.png";
+const paint_bg = "assets/kirby_animation_frames/kirby_bg/paint.png";
+const sword_bg =  "assets/kirby_animation_frames/kirby_bg/sword.png";
 const speed = 0.7; // FrameRate - lower is faster
 const dx = -0.75; // Offset of pfX
 const delay = 19; // Animation delay for Walking Kirby and Chef Kirby animation
@@ -72,7 +78,8 @@ include('js/rss.js');
  */
 function init() {
     // Load images
-    bg.src = "assets/kirby_animation_frames/kirby_bg/forest1.png";
+    // bg.src = "assets/kirby_animation_frames/kirby_bg/normal.png";
+    bg.src = normal_bg;
     pf.src = "assets/grasstile.png";
     wkirby.src = "assets/kirby_animation_frames/normal_kirby_walk/0.png";
     tomato.src = "assets/mtomato.png";
@@ -93,7 +100,7 @@ function init() {
 
     bgMusic = new loadSound("assets/audio/greengreenslong.mp3");
 
-    // Get canvas context and add double click event listener
+    // Get canvas context and add event listeners
     ctx = document.getElementById('canvas').getContext('2d');
     document.getElementById('canvas').addEventListener("click", onSingleClick, false);
     document.getElementById('canvas').addEventListener("dblclick", onDoubleClick, false);
@@ -123,16 +130,22 @@ function init() {
 function kirbyFileUtility() {
     switch (itemType) {
         case fire:
+            bg.src = fire_bg;
             return "fire_kirby";
         case ice:
+            bg.src = ice_bg;
             return "ice_kirby";
         case mirror:
+            bg.src = mirror_bg;
             return "mirror_kirby";
         case painter:
+            bg.src = paint_bg
             return "painter_kirby";
         case sword:
+            bg.src = sword_bg;
             return "sword_kirby";
         default:
+            bg.src = normal_bg;
             return "normal_kirby";
     }
 }
