@@ -27,7 +27,7 @@ var mirror = new Image();
 var painter = new Image();
 var sword = new Image();
 // Load Copy Items
-fire.src = "assets/kirby_animation_frames/copy_abilities/1.png";
+fire.src = "assets/kirby_animation_frame/copy_abilities/1.png";
 ice.src = "assets/kirby_animation_frames/copy_abilities/3.png";
 mirror.src = "assets/kirby_animation_frames/copy_abilities/2.png";
 painter.src = "assets/kirby_animation_frames/copy_abilities/4.png";
