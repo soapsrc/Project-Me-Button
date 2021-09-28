@@ -8,6 +8,7 @@ var wkirby = new Image();
 var walkArray = [];
 // Array holding all chef Kirby animation frames
 var chefArray = [];
+var sparkArray = [8];
 // Chef Kirby
 var ckirby = new Image();
 // Item display boolean
@@ -26,6 +27,7 @@ var pfY = canvas.height - 90; // Y coordiante of scrolling platform
 var delayCount = 1; // Delay count of Walking Kirby and Chef Kirby
 var wKirbyFrame = 0; // Current frame of Walking Kirby and Chef Kerby animation
 var cKirbyFrame = 0; // Current frame of Walking Kirby and Chef Kerby animation
+var sparkFrame = 0;
 var startTime; // Start time of chef -> platform item animation
 var itemX;
 var itemY;
@@ -180,6 +182,9 @@ function draw() {
     drawClouds();
     //  Draw Kirby
     drawKirbys();
+    if (itemType === tomato && isSuck) {
+        drawSparkles();
+    }
     // Draw music toggle button
     drawButtons();
 }
@@ -448,6 +453,37 @@ function updateMirror() {
     currentmeme = memeArray[randomNumberGenerator(memeArray, currentmeme, 0)];
 }
 
+
+function drawSparkles() {
+    // Sparkles
+    var sparkle0 = new Image();
+    var sparkle1 = new Image();
+    var sparkle2 = new Image();
+    var sparkle3 = new Image();
+    var sparkle4 = new Image();
+    var sparkle5 = new Image();
+    var sparkle6 = new Image();
+    var sparkle7 = new Image();
+    var spark = new Image();
+    // Load sparkle images
+    sparkle0.src = "assets/kirby_animation_frames/sparkles/0.gif";
+    sparkle1.src = "assets/kirby_animation_frames/sparkles/1.gif";
+    sparkle2.src = "assets/kirby_animation_frames/sparkles/2.gif";
+    sparkle3.src = "assets/kirby_animation_frames/sparkles/3.gif";
+    sparkle4.src = "assets/kirby_animation_frames/sparkles/4.gif";
+    sparkle5.src = "assets/kirby_animation_frames/sparkles/5.gif";
+    sparkle6.src = "assets/kirby_animation_frames/sparkles/6.gif";
+    sparkle7.src = "assets/kirby_animation_frames/sparkles/7.gif";
+    var sparkArray = [sparkle0, sparkle1, sparkle2, sparkle3, sparkle4, sparkle5, sparkle6, sparkle7];
+    // Draw sparkles at current frame
+    ctx.drawImage(sparkArray[sparkFrame], mirrorX + (currentmeme.width / 3 - 15), mirrorY + currentmeme.height / 3);
+    if (delayCount % delay == 0) { // Only animate Kirbys when delayCount % delay == 0
+        if (sparkFrame < sparkArray.length - 1)
+            sparkFrame++;
+        else sparkFrame = 0;
+    }
+
+}
 // Handle single and double clicks
 var clickTimer
 
