@@ -412,6 +412,9 @@ function dropItem(time) {
         startTime = null; // Reset startTime
         ctx.drawImage(itemType, itemX, itemY);
         itemLanded = true;
+        // Play thud sound effect
+        let thudSound = new loadSound("assets/audio/thud.mp3");
+        thudSound.play();
     } else { // Animation (pot -> platform) has not finished yet
         ctx.drawImage(itemType, currentX, currentY);
         requestAnimationFrame(dropItem); // Continue with animation
@@ -493,6 +496,7 @@ function releaseItem(releaseItemType, e) {
         e.pageY > ckirbyY && e.pageY < ckirbyY + (ckirby.height)) {
         // If an item is not already being drawn then draw item and animate it moving from pot -> platform
         if (!showItem) {
+            playWhoosh();
             showItem = true;
             itemType = releaseItemType;
             dropItem();
@@ -517,6 +521,13 @@ function drawButtons() {
 }
 /**
  * Returns None
+ * Plays woosh sound
+ */
+function playWhoosh() {
+    let woosh = new loadSound("assets/audio/highwhoosh.mp3");
+    woosh.play();
+}
+/**
  * Parameters: path - relative path of mp3 file
  * Only works for mp3 files
  */
