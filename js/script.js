@@ -76,7 +76,7 @@ include('js/rss.js');
  * Returns None
  * Canvas setup
  */
-function init() { 
+function init() {
     // Load images
     // bg.src = "assets/kirby_animation_frames/kirby_bg/normal.png";
     bg.src = normal_bg;
@@ -102,12 +102,12 @@ function init() {
 
     // Clicking outside of intro div hides the div
     document.onclick = ((e) => {
-        if(e.target.id != 'intro' && document.getElementById('intro').style.display != 'none') {
+        if (e.target.id != 'intro' && document.getElementById('intro').style.display != 'none') {
             document.getElementById('intro').style.display = 'none';
         }
     });
     // Fade out after 7 seconds
-    setTimeout(function(){
+    setTimeout(function() {
         document.getElementById("intro").style.display = 'none';
     }, 7000);
 
@@ -286,6 +286,8 @@ function drawKirbys() {
     if (delayCount % delay == 0) { // Only animate Kirbys when delayCount % delay == 0
         wkirby.src = walkArray[wKirbyFrame];
         ckirby.src = chefArray[cKirbyFrame];
+        ckirby.load;
+        wkirby.load;
         wKirbyFrame++; // Update walking Kirby frame
         cKirbyFrame++; // Update chef Kirby frame
     }
@@ -436,6 +438,9 @@ function randomNumberGenerator(arr, compareItem, beforeStartIndex) {
  * updates currentmeme to a random Kirby meme image
  */
 function updateMirror() {
+    // Play magic sound effect every time mirror is updated
+    let magicSound = new loadSound("assets/audio/magic.mp3");
+    magicSound.play();
     // Update  currentmeme
     currentmeme = memeArray[randomNumberGenerator(memeArray, currentmeme, 0)];
 }
