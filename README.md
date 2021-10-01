@@ -15,3 +15,9 @@ Sophia Le, Daniel Tiu, Marela Carlos
 
 ### Branch Naming Convention
 collaboratorname/task
+
+## How to Run
+* Go to https://soapsrc.github.io/Project-Me-Button/
+* Or
+  * Clone https://github.com/soapsrc/Project-Me-Button
+  * Open the file 'index.html'
